@@ -104,10 +104,89 @@ final class AtomiaScraper
                 continue;
             }
 
-            $links[$this->urlJoin($baseUrl, html_entity_decode($href))] = true;
+            $links[$this->normalizeUrl($this->urlJoin($baseUrl, html_entity_decode($href)))] = true;
         }
 
         $result = array_keys($links);
+        sort($result);
+
+        return $result;
+    }
+
+    /** @return array<int, string> */
+    public function parsePaginationLinks(string $agentHtml, string $baseUrl): array
+    {
+        $dom = $this->createDom($agentHtml);
+        $xpath = new DOMXPath($dom);
+
+        $links = [];
+        foreach ($xpath->query('//a[@href]') ?: [] as $anchor) {
+            if (!$anchor instanceof DOMElement) {
+                continue;
+            }
+
+            $href = trim($anchor->getAttribute('href'));
+            if ($href === '' || str_starts_with($href, '#')) {
+                continue;
+            }
+
+            $absolute = $this->normalizeUrl($this->urlJoin($baseUrl, html_entity_decode($href)));
+            if (!$this->isSameHost($baseUrl, $absolute)) {
+                continue;
+            }
+
+            if (!preg_match('~/(makler|agent)/~i', $absolute)) {
+                continue;
+            }
+
+            if (!$this->looksLikePaginationLink($href, $anchor)) {
+                continue;
+            }
+
+            $links[$absolute] = true;
+        }
+
+        $result = array_keys($links);
+        sort($result);
+
+        return $result;
+    }
+
+    /** @return array<int, string> */
+    public function collectPropertyLinks(string $agentUrl, ?int $maxPages = null): array
+    {
+        $queue = [$this->normalizeUrl($agentUrl)];
+        $visited = [];
+        $properties = [];
+
+        while ($queue !== []) {
+            $current = array_shift($queue);
+            if (!is_string($current)) {
+                continue;
+            }
+            if (isset($visited[$current])) {
+                continue;
+            }
+
+            if ($maxPages !== null && count($visited) >= $maxPages) {
+                break;
+            }
+
+            $visited[$current] = true;
+            $html = $this->fetchHtml($current);
+
+            foreach ($this->parsePropertyLinks($html, $current) as $link) {
+                $properties[$link] = true;
+            }
+
+            foreach ($this->parsePaginationLinks($html, $current) as $pageUrl) {
+                if (!isset($visited[$pageUrl])) {
+                    $queue[] = $pageUrl;
+                }
+            }
+        }
+
+        $result = array_keys($properties);
         sort($result);
 
         return $result;
@@ -179,8 +258,7 @@ final class AtomiaScraper
     /** @return array<int, PropertyDetail> */
     public function scrape(string $agentUrl, ?int $limit = null): array
     {
-        $agentHtml = $this->fetchHtml($agentUrl);
-        $links = $this->parsePropertyLinks($agentHtml, $agentUrl);
+        $links = $this->collectPropertyLinks($agentUrl);
         if ($limit !== null) {
             $links = array_slice($links, 0, $limit);
         }
@@ -367,6 +445,36 @@ final class AtomiaScraper
         $clean = trim($clean);
 
         return $clean === '' ? null : $clean;
+    }
+
+    private function normalizeUrl(string $url): string
+    {
+        return preg_replace('/#.*$/', '', $url) ?? $url;
+    }
+
+    private function looksLikePaginationLink(string $href, DOMElement $anchor): bool
+    {
+        $rel = mb_strtolower(trim($anchor->getAttribute('rel')));
+        $class = mb_strtolower(trim($anchor->getAttribute('class')));
+        $text = mb_strtolower(trim($anchor->textContent));
+
+        if (preg_match('~([?&]page=|/page/)~i', $href)) {
+            return true;
+        }
+
+        if (str_contains($rel, 'next') || str_contains($class, 'pagination') || str_contains($class, 'pager')) {
+            return true;
+        }
+
+        return $text === 'ďalšia' || $text === 'next' || $text === '>'; 
+    }
+
+    private function isSameHost(string $base, string $candidate): bool
+    {
+        $baseHost = parse_url($base, PHP_URL_HOST);
+        $candidateHost = parse_url($candidate, PHP_URL_HOST);
+
+        return is_string($baseHost) && is_string($candidateHost) && mb_strtolower($baseHost) === mb_strtolower($candidateHost);
     }
 
     private function urlJoin(string $base, string $path): string

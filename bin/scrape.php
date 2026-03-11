@@ -100,8 +100,7 @@ try {
         echo "Načítavam profil makléra: {$agentUrl}\n";
     }
 
-    $agentHtml = $scraper->fetchHtml($agentUrl);
-    $links = $scraper->parsePropertyLinks($agentHtml, $agentUrl);
+    $links = $scraper->collectPropertyLinks($agentUrl);
     if ($options['limit'] !== null) {
         $links = array_slice($links, 0, $options['limit']);
     }

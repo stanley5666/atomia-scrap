@@ -1,7 +1,7 @@
 # Atomia scraper (PHP)
 
 PHP aplikácia, ktorá vytiahne ponuku nehnuteľností makléra z Atomia a uloží detailné dáta do JSON.
-Výstup je pripravený na použitie na osobnom webe makléra.
+Výstup je pripravený na použitie na osobnom webe makléra. Scraper prechádza aj stránkovanie ponuky makléra.
 
 ## Požiadavky
 
@@ -37,7 +37,7 @@ Pri spustení skript vypíše, čo načítal:
 - lokalita
 - cena
 - výmera
-- popis
+- popis (text inzerátu – použiteľný na kopírovanie/publikovanie)
 - obrázky
 - tabuľkové/parametrické atribúty
 - JSON-LD dáta z detailu

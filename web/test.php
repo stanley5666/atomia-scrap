@@ -34,8 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $scraper = new AtomiaScraper();
         $logs[] = 'Načítavam profil makléra: ' . $input['agent_url'];
 
-        $agentHtml = $scraper->fetchHtml($input['agent_url']);
-        $links = $scraper->parsePropertyLinks($agentHtml, $input['agent_url']);
+        $links = $scraper->collectPropertyLinks($input['agent_url']);
         if ($limit !== null) {
             $links = array_slice($links, 0, $limit);
         }

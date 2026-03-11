@@ -32,6 +32,25 @@ function testParsePropertyLinks(): void
     assertTrue($links[1] === 'https://www.atomia.sk/nehnutelnost/dom-2', 'Druhý link nesedí');
 }
 
+function testParsePaginationLinks(): void
+{
+    $html = <<<'HTML'
+    <html><body>
+      <a href="/makler/7-ing-alena-katonova?page=2">2</a>
+      <a href="/makler/7-ing-alena-katonova?page=3">Ďalšia</a>
+      <a href="https://www.atomia.sk/makler/7-ing-alena-katonova?page=2#properties">Dup</a>
+      <a href="/nehnutelnost/byt-1">Nie je stránkovanie</a>
+    </body></html>
+    HTML;
+
+    $scraper = new AtomiaScraper();
+    $links = $scraper->parsePaginationLinks($html, 'https://www.atomia.sk/makler/7-ing-alena-katonova#properties');
+
+    assertTrue(count($links) === 2, 'Počet stránkovacích linkov musí byť 2');
+    assertTrue($links[0] === 'https://www.atomia.sk/makler/7-ing-alena-katonova?page=2', 'Link na stránku 2 nesedí');
+    assertTrue($links[1] === 'https://www.atomia.sk/makler/7-ing-alena-katonova?page=3', 'Link na stránku 3 nesedí');
+}
+
 function testParseDetail(): void
 {
     $html = <<<'HTML'
@@ -58,6 +77,7 @@ function testParseDetail(): void
     $detail = $scraper->parseDetail($html, 'https://www.atomia.sk/nehnutelnost/byt-1');
 
     assertTrue($detail->title === 'Priestranný 3-izbový byt', 'Názov nesedí');
+    assertTrue($detail->description === 'Skvelá lokalita, kompletná rekonštrukcia.', 'Text inzerátu nesedí');
     assertTrue($detail->price === '199000', 'Cena nesedí');
     assertTrue($detail->areaM2 === '78 m²', 'Výmera nesedí');
     assertTrue($detail->location === 'Tomášikova 1', 'Lokalita nesedí');
@@ -65,6 +85,7 @@ function testParseDetail(): void
 }
 
 testParsePropertyLinks();
+testParsePaginationLinks();
 testParseDetail();
 
 echo "OK\n";
