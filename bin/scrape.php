@@ -6,13 +6,40 @@ declare(strict_types=1);
 require_once __DIR__ . '/../src/AtomiaScraper.php';
 
 use AtomiaScraper\AtomiaScraper;
+use AtomiaScraper\PropertyDetail;
 
 function printHelp(): void
 {
     echo "Použitie:\n";
-    echo "  php bin/scrape.php <agent_url> [--output=output/properties.json] [--limit=10] [--pretty]\n\n";
+    echo "  php bin/scrape.php <agent_url> [--output=output/properties.json] [--limit=10] [--pretty] [--quiet]\n\n";
     echo "Príklad:\n";
     echo "  php bin/scrape.php 'https://www.atomia.sk/makler/12-ing-michaela-karafa#properties' --pretty\n";
+}
+
+/** @param array<int, PropertyDetail> $properties */
+function printSummary(array $properties): void
+{
+    echo "\nPrehľad načítaných nehnuteľností:\n";
+    foreach ($properties as $index => $property) {
+        $num = $index + 1;
+
+        if (isset($property->attributes['error'])) {
+            echo sprintf("%d. [CHYBA] %s\n", $num, $property->url);
+            echo "   Dôvod: {$property->attributes['error']}\n";
+            continue;
+        }
+
+        $title = $property->title ?? 'bez názvu';
+        $location = $property->location ?? '-';
+        $price = $property->price ?? '-';
+        $images = count($property->images);
+
+        echo sprintf("%d. %s\n", $num, $title);
+        echo "   URL: {$property->url}\n";
+        echo "   Lokalita: {$location}\n";
+        echo "   Cena: {$price}\n";
+        echo "   Obrázky: {$images}\n";
+    }
 }
 
 $args = $argv;
@@ -34,6 +61,7 @@ $options = [
     'output' => 'output/properties.json',
     'limit' => null,
     'pretty' => false,
+    'quiet' => false,
 ];
 
 foreach ($args as $arg) {
@@ -43,32 +71,71 @@ foreach ($args as $arg) {
         $options['limit'] = (int) substr($arg, 8);
     } elseif ($arg === '--pretty') {
         $options['pretty'] = true;
+    } elseif ($arg === '--quiet') {
+        $options['quiet'] = true;
     } else {
         fwrite(STDERR, "Neznámy parameter: {$arg}\n");
         exit(1);
     }
 }
 
-$scraper = new AtomiaScraper();
-$properties = $scraper->scrape($agentUrl, $options['limit']);
-$payload = array_map(static fn ($item) => $item->toArray(), $properties);
+try {
+    $scraper = new AtomiaScraper();
 
-$outputPath = $options['output'];
-$dir = dirname($outputPath);
-if (!is_dir($dir)) {
-    mkdir($dir, 0777, true);
+    if (!$options['quiet']) {
+        echo "Načítavam profil makléra: {$agentUrl}\n";
+    }
+
+    $agentHtml = $scraper->fetchHtml($agentUrl);
+    $links = $scraper->parsePropertyLinks($agentHtml, $agentUrl);
+    if ($options['limit'] !== null) {
+        $links = array_slice($links, 0, $options['limit']);
+    }
+
+    if (!$options['quiet']) {
+        echo 'Nájdené inzeráty: ' . count($links) . "\n";
+    }
+
+    $properties = [];
+    foreach ($links as $i => $link) {
+        if (!$options['quiet']) {
+            echo sprintf("[%d/%d] Načítavam detail: %s\n", $i + 1, count($links), $link);
+        }
+
+        try {
+            $detailHtml = $scraper->fetchHtml($link);
+            $properties[] = $scraper->parseDetail($detailHtml, $link);
+        } catch (RuntimeException $e) {
+            $properties[] = new PropertyDetail(url: $link, attributes: ['error' => $e->getMessage()]);
+        }
+    }
+
+    $payload = array_map(static fn ($item) => $item->toArray(), $properties);
+
+    $outputPath = $options['output'];
+    $dir = dirname($outputPath);
+    if (!is_dir($dir)) {
+        mkdir($dir, 0777, true);
+    }
+
+    $jsonFlags = JSON_UNESCAPED_UNICODE;
+    if ($options['pretty']) {
+        $jsonFlags |= JSON_PRETTY_PRINT;
+    }
+
+    $json = json_encode($payload, $jsonFlags);
+    if (!is_string($json)) {
+        throw new RuntimeException('Nepodarilo sa vytvoriť JSON.');
+    }
+
+    file_put_contents($outputPath, $json);
+
+    if (!$options['quiet']) {
+        printSummary($properties);
+    }
+
+    echo "\nUložené: {$outputPath} (počet nehnuteľností: " . count($payload) . ")\n";
+} catch (RuntimeException $e) {
+    fwrite(STDERR, "Chyba: {$e->getMessage()}\n");
+    exit(1);
 }
-
-$jsonFlags = JSON_UNESCAPED_UNICODE;
-if ($options['pretty']) {
-    $jsonFlags |= JSON_PRETTY_PRINT;
-}
-
-$json = json_encode($payload, $jsonFlags);
-if (!is_string($json)) {
-    throw new RuntimeException('Nepodarilo sa vytvoriť JSON.');
-}
-
-file_put_contents($outputPath, $json);
-
-echo "Uložené: {$outputPath} (počet nehnuteľností: " . count($payload) . ")\n";

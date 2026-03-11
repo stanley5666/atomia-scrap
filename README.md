@@ -15,12 +15,18 @@ php bin/scrape.php "https://www.atomia.sk/makler/12-ing-michaela-karafa#properti
 
 Výstup sa uloží do `output/properties.json`.
 
+Pri spustení skript vypíše, čo načítal:
+- počet nájdených inzerátov
+- priebežné načítanie detailov
+- finálny prehľad každej nehnuteľnosti (názov, URL, lokalita, cena, počet obrázkov)
+
 ### Prepínače
 
 - `--output=...` vlastný JSON súbor (napr. `--output=data/nehnutelnosti.json`)
 - `--limit=...` obmedzenie počtu inzerátov na test
 - `--pretty` formátovaný JSON
 - `--help` pomoc
+- `--quiet` vypne priebežný výpis a prehľad
 
 ## Čo sa exportuje
 
