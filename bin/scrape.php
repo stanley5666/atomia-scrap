@@ -7,6 +7,17 @@ require_once __DIR__ . '/../src/AtomiaScraper.php';
 use AtomiaScraper\AtomiaScraper;
 use AtomiaScraper\PropertyDetail;
 
+
+function fail(string $message, int $code = 1): never
+{
+    if (PHP_SAPI === 'cli') {
+        fwrite(STDERR, $message . "\n");
+    } else {
+        echo $message . "\n";
+    }
+    exit($code);
+}
+
 function printHelp(): void
 {
     echo "Použitie:\n";
@@ -41,7 +52,12 @@ function printSummary(array $properties): void
     }
 }
 
-$args = $argv;
+$rawArgv = $GLOBALS['argv'] ?? ($_SERVER['argv'] ?? null);
+if (!is_array($rawArgv)) {
+    fail('Tento skript treba spustiť cez CLI: php bin/scrape.php <agent_url> [--output=...] [--limit=...] [--pretty] [--quiet]');
+}
+
+$args = $rawArgv;
 array_shift($args);
 
 if ($args === [] || in_array('--help', $args, true) || in_array('-h', $args, true)) {
@@ -73,8 +89,7 @@ foreach ($args as $arg) {
     } elseif ($arg === '--quiet') {
         $options['quiet'] = true;
     } else {
-        fwrite(STDERR, "Neznámy parameter: {$arg}\n");
-        exit(1);
+        fail("Neznámy parameter: {$arg}");
     }
 }
 
@@ -135,6 +150,5 @@ try {
 
     echo "\nUložené: {$outputPath} (počet nehnuteľností: " . count($payload) . ")\n";
 } catch (RuntimeException $e) {
-    fwrite(STDERR, "Chyba: {$e->getMessage()}\n");
-    exit(1);
+    fail("Chyba: {$e->getMessage()}");
 }
