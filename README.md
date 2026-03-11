@@ -42,6 +42,25 @@ Pri spustení skript vypíše, čo načítal:
 - tabuľkové/parametrické atribúty
 - JSON-LD dáta z detailu
 
+
+## HTML test (v prehliadači)
+
+Ak chceš scraper testovať cez web rozhranie, použi súbor `web/test.php`.
+
+Spustenie lokálne:
+
+```bash
+php -S 127.0.0.1:8080 -t .
+```
+
+Potom otvor:
+
+- `http://127.0.0.1:8080/web/test.php`
+
+V stránke zadáš URL makléra, limit a po spustení uvidíš:
+- log načítania (profil + jednotlivé detaily)
+- výsledný JSON priamo na stránke
+
 ## Test
 
 ```bash
