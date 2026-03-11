@@ -1,32 +1,28 @@
-# Atomia scraper
+# Atomia scraper (PHP)
 
-Jednoduchá Python aplikácia, ktorá vytiahne ponuku nehnuteľností makléra z Atomia a uloží detailné dáta do JSON. Výsledný súbor vieš následne použiť na osobnom webe (statický web, CMS import, vlastný frontend).
+PHP aplikácia, ktorá vytiahne ponuku nehnuteľností makléra z Atomia a uloží detailné dáta do JSON.
+Výstup je pripravený na použitie na osobnom webe makléra.
 
-## Inštalácia
+## Požiadavky
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -e .
-```
+- PHP 8.1+
 
 ## Použitie
 
 ```bash
-python -m atomia_scraper.cli "https://www.atomia.sk/makler/12-ing-michaela-karafa#properties" --pretty
+php bin/scrape.php "https://www.atomia.sk/makler/12-ing-michaela-karafa#properties" --pretty
 ```
 
 Výstup sa uloží do `output/properties.json`.
 
-### Dôležité prepínače
+### Prepínače
 
-- `--output`: vlastný názov výstupu (napr. `data/nehnutelnosti.json`)
-- `--limit`: obmedzenie počtu inzerátov na testovanie
-- `--pretty`: formátovaný JSON na ručnú kontrolu
+- `--output=...` vlastný JSON súbor (napr. `--output=data/nehnutelnosti.json`)
+- `--limit=...` obmedzenie počtu inzerátov na test
+- `--pretty` formátovaný JSON
+- `--help` pomoc
 
 ## Čo sa exportuje
-
-Na každú nehnuteľnosť sa ukladá:
 
 - URL detailu
 - titulok
@@ -40,23 +36,20 @@ Na každú nehnuteľnosť sa ukladá:
 - tabuľkové/parametrické atribúty
 - JSON-LD dáta z detailu
 
-## Integrácia na osobný web
-
-Najjednoduchšie je načítať `properties.json` vo vlastnom frontende (napr. Next.js, Nuxt, Astro, Hugo) a vyrenderovať karty nehnuteľností + detail stránky.
-
-Odporúčaný flow:
-
-1. Spúšťať scraper cez cron (napr. každé 3 hodiny).
-2. Commitnúť alebo publikovať nový JSON artefakt.
-3. Web si pri builde načíta aktuálne dáta.
-
-## Testy
+## Test
 
 ```bash
-pip install -e .[dev]
-pytest
+php tests/test_scraper.php
 ```
+
+## Integrácia na osobný web
+
+Odporúčanie:
+
+1. Spúšťať skript cez cron (napr. každé 3 hodiny).
+2. Uložiť nový `properties.json` do repozitára alebo objektového storage.
+3. Web načíta aktuálne dáta pri builde alebo runtime.
 
 ## Poznámka
 
-Niektoré weby môžu blokovať scraping podľa siete/IP. V tom prípade použi vlastný server/VPS, kde je prístup povolený.
+Ak je scraping blokovaný podľa IP/proxy, spúšťaj skript na serveri/VPS s povoleným prístupom.
