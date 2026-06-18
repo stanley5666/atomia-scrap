@@ -720,6 +720,40 @@ body.menu-open .nav-toggle span::after  { transform: rotate(-45deg); }
 .prose p, .prose li { color: var(--text); }
 .prose .updated { color: var(--muted); font-size: .9rem; }
 
+/* Obrázky & médiá */
+.media { border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow); background: var(--brand-tint); position: relative; }
+.media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.feature-row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem,5vw,4rem); align-items: center; }
+.feature-row.reverse .media { order: 2; }
+.feature-row .media { aspect-ratio: 4 / 3; }
+.hero-media { aspect-ratio: 16 / 10; margin-top: 1.5rem; }
+
+/* Kompaktný CTA pás */
+.cta-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  background: linear-gradient(120deg, var(--brand) 0%, var(--brand-dark) 100%);
+  color: #fff;
+  border-radius: var(--r-lg);
+  padding: 1.6rem clamp(1.4rem, 4vw, 2.4rem);
+}
+.cta-strip .cta-strip-text { font-size: clamp(1.15rem, 2.4vw, 1.5rem); font-weight: 800; color: #fff; margin: 0; }
+.cta-strip .cta-strip-text span { color: var(--accent); }
+.cta-strip .cta-strip-actions { display: flex; gap: .75rem; flex-wrap: wrap; }
+
+/* Sociálny CTA blok (FB/IG ako hlavné kanály) */
+.social-cta { text-align: center; max-width: 720px; margin: 0 auto; }
+.social-cta .social-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1.4rem; }
+.btn-fb { background: #1877F2; color: #fff; }
+.btn-fb:hover { background: #0f63d6; color: #fff; transform: translateY(-2px); }
+.btn-ig { background: linear-gradient(45deg, #F58529, #DD2A7B 50%, #8134AF 100%); color: #fff; }
+.btn-ig:hover { color: #fff; transform: translateY(-2px); filter: brightness(1.05); }
+.btn-wa { background: #25D366; color: #073; }
+.btn-wa:hover { background: #1ebe5a; color: #062; transform: translateY(-2px); }
+
 /* 17. PLÁVAJÚCE CTA (mobil) ---------------------------------------------- */
 .fab {
   position: fixed;
@@ -763,6 +797,9 @@ body.menu-open .nav-toggle span::after  { transform: rotate(-45deg); }
   .price-wrap, .req-grid, .contact-grid { grid-template-columns: 1fr; }
   .quote { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
+  .feature-row { grid-template-columns: 1fr; }
+  .feature-row.reverse .media { order: 0; }
+  .cta-strip { flex-direction: column; align-items: flex-start; text-align: left; }
 }
 
 @media (max-width: 760px) {

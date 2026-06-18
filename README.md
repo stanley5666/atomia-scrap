@@ -73,22 +73,32 @@ Stačí nahrať obsah priečinka. Odporúčame HTTPS a presmerovanie `autokassa.
      ```
    (FB/IG/Twitter ignorujú SVG, preto je potrebný raster.)
 
-2. **Formulár – odosielanie:** v `index.html` má `<form id="quoteForm">` atribút `action="https://formspree.io/f/your-id"`.
+2. **Obrázky (dôležité pre produkciu):** fotky na hlavnej stránke (auto, garáž, kľúče+peniaze)
+   sú dočasne načítané z CDN generátora (`d8j0ntlcm91z4.cloudfront.net`). Pre preview to stačí,
+   ale **pred ostrým spustením ich stiahnite a hostujte lokálne** v `assets/img/` a v `index.html`
+   nahraďte URL lokálnymi cestami (každý `<img>` má pri sebe `TODO` komentár). Dôvody: rýchlosť,
+   nezávislosť od externého CDN a istota, že URL nevyprší. Aktuálne použité obrázky:
+   - auto v štúdiu → `…hf_20260618_185213_b7571df7-…_min.webp` (uložiť ako `auto.webp`)
+   - vozidlo v garáži → `…hf_20260618_184757_21cc987f-…_min.webp` (uložiť ako `garaz.webp`)
+   - kľúče + hotovosť → `…hf_20260618_185212_b384466b-…_min.webp` (uložiť ako `peniaze.webp`)
+   Obrázky sú vygenerované (bez licenčných obmedzení stock fotiek).
+
+3. **Formulár – odosielanie:** v `index.html` má `<form id="quoteForm">` atribút `action="https://formspree.io/f/your-id"`.
    - nahraďte reálnym endpointom (Formspree, Web3Forms, Netlify Forms, alebo vlastný backend);
    - kým nie je nastavený, formulár zobrazí len potvrdenie (lead sa neodošle).
    - Pre **Netlify Forms** pridajte na `<form>`: `netlify` a `name="ponuka"`.
 
-3. **Facebook Pixel / Google Analytics 4:** odkomentovať a doplniť ID v `<head>` `index.html`
+4. **Facebook Pixel / Google Analytics 4:** odkomentovať a doplniť ID v `<head>` `index.html`
    (GA4 blok) a aktivovať konverziu v `assets/js/main.js` vo funkcii `showSuccess()`
    (`fbq('track','Lead')`, `gtag('event','generate_lead')`).
 
-4. **Sociálne siete:** v kóde sú placeholdery
+5. **Sociálne siete:** v kóde sú placeholdery
    `https://www.facebook.com/autokassa` a `https://www.instagram.com/autokassa` – nahraďte reálnymi profilmi.
 
-5. **Otváracie hodiny:** v JSON-LD (`openingHoursSpecification`) je predvolené Po–Pia 9:00–17:00 – upravte podľa reality.
+6. **Otváracie hodiny:** v JSON-LD (`openingHoursSpecification`) je predvolené Po–Pia 9:00–17:00 – upravte podľa reality.
 
-6. **GPS súradnice:** `geo.position` / `GeoCoordinates` sú približné pre Košice – spresnite podľa presnej polohy prevádzky.
+7. **GPS súradnice:** `geo.position` / `GeoCoordinates` sú približné pre Košice – spresnite podľa presnej polohy prevádzky.
 
-7. **Právne stránky:** `obchodne-podmienky.html` a `ochrana-osobnych-udajov.html` sú vzory – nechať skontrolovať právnikom, doplniť poplatky, úroky a lehoty.
+8. **Právne stránky:** `obchodne-podmienky.html` a `ochrana-osobnych-udajov.html` sú vzory – nechať skontrolovať právnikom, doplniť poplatky, úroky a lehoty.
 
-8. **Doména:** skontrolovať, či kánonická verzia (`www.` vs bez `www.`) sedí s reálnym nastavením hostingu.
+9. **Doména:** skontrolovať, či kánonická verzia (`www.` vs bez `www.`) sedí s reálnym nastavením hostingu.
