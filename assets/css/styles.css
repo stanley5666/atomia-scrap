@@ -768,6 +768,9 @@ body.menu-open .nav-toggle span::after  { transform: rotate(-45deg); }
 @media (max-width: 760px) {
   .nav-links, .nav-phone { display: none; }
   .nav-toggle { display: inline-flex; }
+  /* CTA tlačidlo v hlavičke na mobile prekáža – nahrádza ho plávajúce tlačidlo a hero CTA */
+  .nav-cta .btn-primary { display: none; }
+  .brand { font-size: 1.18rem; }
 
   /* Mobilné menu */
   .nav-links.open {
