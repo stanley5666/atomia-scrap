@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 48" width="260" height="48">
+  <rect x="2" y="7" width="34" height="34" rx="9" fill="#0F766E"/>
+  <path d="M9 30l1.8-5.4A3 3 0 0 1 13.6 22.5h10.8a3 3 0 0 1 2.8 2.1L29 30v4.5a1.5 1.5 0 0 1-1.5 1.5h-1.5a1.5 1.5 0 0 1-1.5-1.5v-.75H13.5v.75a1.5 1.5 0 0 1-1.5 1.5h-1.5A1.5 1.5 0 0 1 9 34.5V30Z" fill="#fff"/>
+  <path d="M11.2 29.3h15.6l-1.2-3.6a1.1 1.1 0 0 0-1.05-.75h-10.5a1.1 1.1 0 0 0-1.05.75L11.2 29.3Z" fill="#F39200"/>
+  <text x="46" y="32" font-family="Manrope, Arial, sans-serif" font-size="22" font-weight="800" letter-spacing="-0.5">
+    <tspan fill="#0F766E">AUTO</tspan><tspan fill="#F39200">KASSA</tspan>
+  </text>
+</svg>

@@ -1,0 +1,13 @@
+{
+  "name": "AUTOKASSA – Autozáložňa Košice",
+  "short_name": "AUTOKASSA",
+  "description": "Autozáložňa Košice – peniaze na auto ihneď, až do 90 % hodnoty vozidla.",
+  "lang": "sk",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0F766E",
+  "icons": [
+    { "src": "/assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
