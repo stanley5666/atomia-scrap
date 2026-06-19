@@ -585,6 +585,10 @@ body.menu-open .nav-toggle span::after  { transform: rotate(-45deg); }
 .est-row--big span { font-weight: 700; color: #fff; }
 .est-row--big b { color: var(--accent); font-size: clamp(1.6rem, 4vw, 2.1rem); }
 .est.loading { opacity: .6; }
+.est-disclaimer { display: flex; gap: .6rem; align-items: flex-start; margin-top: 1rem; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); border-radius: var(--r-sm); padding: .8rem .9rem; }
+.est-disclaimer svg { width: 20px; height: 20px; color: var(--accent); flex: none; margin-top: 1px; }
+.est-disclaimer span { font-size: .88rem; color: rgba(255,255,255,.9); }
+.est-disclaimer strong { color: #fff; }
 
 .quote-form { padding: clamp(1.8rem, 4vw, 3rem); }
 .field { margin-bottom: 1.05rem; }

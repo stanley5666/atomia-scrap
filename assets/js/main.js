@@ -106,8 +106,7 @@
     var loan = Math.max(MIN_SUM, round50(market * rate));
     setEst(avg, loan, market);
     if (estNote) estNote.textContent =
-      "Z " + count + " podobných áut na autobazar.eu · sadzba " + Math.round(rate * 100) +
-      " % podľa km. Orientačné, presnú sumu určíme po obhliadke.";
+      "Orientačný výpočet podľa veku a najazdených km. Presná výška pôžičky je možná až po obhliadke vozidla — kontaktujte nás.";
   }
 
   if (calcBtn) {
@@ -140,7 +139,7 @@
       var orig = calcBtn.textContent;
       calcBtn.textContent = "Hľadám podobné autá…";
       if (estBox) estBox.classList.add("loading");
-      if (estNote) estNote.textContent = "Porovnávam podobné " + brand + " " + model + " na autobazar.eu…";
+      if (estNote) estNote.textContent = "Počítam možnú pôžičku pre " + brand + " " + model + "…";
 
       fetch(url, { headers: { "Accept": "application/json" } })
         .then(function (r) { return r.json(); })
@@ -150,8 +149,7 @@
           } else {
             setEst(null, null, null);
             if (estNote) estNote.textContent =
-              (data && data.message) ||
-              "Nenašli sme dosť podobných áut. Nechajte nám kontakt nižšie a oceníme auto ručne.";
+              "Výpočet sa teraz nepodaril. Nechajte nám kontakt nižšie a auto oceníme po obhliadke.";
           }
         })
         .catch(function () {
