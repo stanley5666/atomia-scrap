@@ -256,7 +256,7 @@ section { padding-block: var(--section-y); }
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 1.9rem;
+  gap: 1.5rem;
   margin: 0 auto;
 }
 .nav-links a {
@@ -264,6 +264,7 @@ section { padding-block: var(--section-y); }
   font-weight: 600;
   font-size: .98rem;
   position: relative;
+  white-space: nowrap;
 }
 .nav-links a::after {
   content: "";
@@ -284,6 +285,7 @@ section { padding-block: var(--section-y); }
   gap: .5rem;
   font-weight: 800;
   color: var(--ink);
+  white-space: nowrap;
 }
 .nav-phone:hover { color: var(--brand); }
 
@@ -802,14 +804,15 @@ body.menu-open .nav-toggle span::after  { transform: rotate(-45deg); }
   .cta-strip { flex-direction: column; align-items: flex-start; text-align: left; }
 }
 
-@media (max-width: 760px) {
+/* Navigáciu zbalíme do hamburgeru skôr – na užších oknách/tabletoch sa inak texty tlačia */
+@media (max-width: 1080px) {
   .nav-links, .nav-phone { display: none; }
   .nav-toggle { display: inline-flex; }
-  /* CTA tlačidlo v hlavičke na mobile prekáža – nahrádza ho plávajúce tlačidlo a hero CTA */
+  /* CTA tlačidlo v hlavičke prekáža – nahrádza ho plávajúce tlačidlo a hero CTA */
   .nav-cta .btn-primary { display: none; }
   .brand { font-size: 1.18rem; }
 
-  /* Mobilné menu */
+  /* Mobilné / tabletové menu */
   .nav-links.open {
     display: flex;
     position: fixed;
@@ -826,8 +829,11 @@ body.menu-open .nav-toggle span::after  { transform: rotate(-45deg); }
   .nav-links.open a { padding: .9rem .25rem; border-bottom: 1px solid var(--line); }
   .nav-links.open a::after { display: none; }
 
-  .trust .container { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
   .fab { display: flex; }
+}
+
+@media (max-width: 760px) {
+  .trust .container { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
   .footer-bottom { justify-content: center; text-align: center; }
 }
 
