@@ -572,6 +572,13 @@ body.menu-open .nav-toggle span::after  { transform: rotate(-45deg); }
 .quote-info .est .label { font-size: .85rem; color: rgba(255,255,255,.8); text-transform: uppercase; letter-spacing: .08em; }
 .quote-info .est .val { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; color: #fff; }
 .quote-info .est small { color: rgba(255,255,255,.7); display: block; margin-top: .3rem; }
+.est-row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: .55rem 0; border-bottom: 1px dashed rgba(255,255,255,.25); }
+.est-row span { color: rgba(255,255,255,.85); font-size: .95rem; }
+.est-row b { color: #fff; font-weight: 800; }
+.est-row--big { border-bottom: none; padding-top: .7rem; }
+.est-row--big span { font-weight: 700; color: #fff; }
+.est-row--big b { color: var(--accent); font-size: clamp(1.6rem, 4vw, 2.1rem); }
+.est.loading { opacity: .6; }
 
 .quote-form { padding: clamp(1.8rem, 4vw, 3rem); }
 .field { margin-bottom: 1.05rem; }

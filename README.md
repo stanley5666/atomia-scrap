@@ -63,6 +63,37 @@ Stačí nahrať obsah priečinka. Odporúčame HTTPS a presmerovanie `autokassa.
 
 ---
 
+## 🧮 Online kalkulačka (ocenenie z autobazar.eu)
+
+Kalkulačka v sekcii „Online ocenenie" funguje takto:
+1. Návštevník zadá **značku, model, rok výroby a najazdené km** (nezadáva cenu).
+2. Frontend (`assets/js/main.js`) zavolá backend **`api/ocenenie.php`**.
+3. PHP skript na pozadí **scrapne autobazar.eu**, nájde podobné autá a vráti
+   **priemernú cenu** (po orezaní odľahlých hodnôt).
+4. Frontend vypočíta: **reálna hodnota = 90 % priemernej ceny**, a z nej
+   **možnú pôžičku = reálna hodnota × sadzba podľa km** (min. 1 000 €).
+
+**Prečo backend (PHP):** prehliadač nevie scrapovať autobazar.eu (CORS) a
+GitHub Pages nevie spúšťať serverový kód. Skript preto musí bežať na hostingu
+s PHP (napr. `www.autokassa.sk`). Na GitHub Pages náhľade kalkulačka používateľa
+slušne nasmeruje na odoslanie žiadosti.
+
+**Nastavenie:**
+- Nahrajte `api/ocenenie.php` na PHP hosting (ideálne na rovnakú doménu ako web).
+- V `assets/js/main.js` hore je `API_BASE`:
+  - `""` = rovnaký pôvod ako web (web aj PHP na `autokassa.sk`),
+  - alebo napr. `"https://www.autokassa.sk"` ak web beží inde.
+- `MARKET_ADJ = 0.90` a km-sadzby v `rateByKm()` zodpovedajú cenníku – upravte podľa potreby.
+
+**⚠️ Nutné overiť na serveri (nevedel som sa dostať na autobazar.eu – blokuje boty):**
+- presný **formát URL vyhľadávania** vo funkcii `build_search_url()`,
+- **regulárne výrazy na cenu** v `extract_prices()` (po overení markupu sa dajú zúžiť na konkrétny selektor),
+- portál môže mať **ochranu proti botom (Cloudflare)** – ak vráti prázdno, treba realistickejšie hlavičky / proxy.
+- Rešpektujte **podmienky používania autobazar.eu** a primeranú frekvenciu dopytov (skript má 12 h cache).
+
+Ak by scraping nebol vhodný/možný, kalkulačka má **bezpečný fallback** – používateľa
+vyzve nechať kontakt a auto oceníte ručne (lead sa nestratí).
+
 ## ✅ ČO DOPLNIŤ pred spustením
 
 1. **OG obrázok (dôležité pre FB/IG):** vyexportovať `assets/img/og-image.svg` do **PNG 1200×630** ako `assets/img/og-image.png`.

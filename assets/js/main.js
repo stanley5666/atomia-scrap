@@ -55,9 +55,22 @@
     revealEls.forEach(function (el) { el.classList.add("in"); });
   }
 
-  /* --- Kalkulačka záložnej sumy ---
-     Percentá podľa cenníka (osobné a úžitkové vozidlá). */
+  /* --- Online kalkulačka pôžičky (ocenenie z autobazar.eu) ---
+     UI zadá značku, model, ročník a km. Backend (api/ocenenie.php) scrapne
+     autobazar.eu a vráti priemernú cenu podobných áut. Tu z nej vypočítame:
+       reálna hodnota = priemer * MARKET_ADJ (90 % – inzerátne ceny bývajú vyššie)
+       možná pôžička  = reálna hodnota * sadzba podľa km  (min. 1 000 €)
+     ----------------------------------------------------------------------
+     NASTAVENIE: API_BASE = pôvod, kde beží api/ocenenie.php.
+       - prázdne ""   = rovnaký pôvod ako web (funguje na PHP hostingu autokassa.sk)
+       - alebo napr.  "https://www.autokassa.sk"  (ak je web inde a PHP na doméne)
+     Na GitHub Pages (statický náhľad) PHP nebeží – kalkulačka vtedy
+     používateľa nasmeruje na odoslanie žiadosti. */
+  var API_BASE = "";           // napr. "https://www.autokassa.sk"
+  var API_PATH = "/api/ocenenie.php";
+  var MARKET_ADJ = 0.90;       // reálna hodnota = 90 % priemernej inzerátnej ceny
   var MIN_SUM = 1000;
+
   function rateByKm(km) {
     if (km <= 50000)  return 0.90;
     if (km <= 100000) return 0.85;
@@ -68,29 +81,91 @@
     return 0.40;
   }
   var fmt = new Intl.NumberFormat("sk-SK", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+  function round50(n) { return Math.round(n / 50) * 50; }
 
-  var valEl = document.getElementById("value");
-  var kmEl = document.getElementById("km");
-  var out = document.getElementById("estValue");
-  var note = document.getElementById("estNote");
+  var calcBtn = document.getElementById("calcBtn");
+  var estAvg = document.getElementById("estAvg");
+  var estMarket = document.getElementById("estMarket");
+  var estLoan = document.getElementById("estLoan");
+  var estNote = document.getElementById("estNote");
+  var estBox = estNote ? estNote.closest(".est") : null;
+  var hidAvg = document.getElementById("hidAvg");
+  var hidLoan = document.getElementById("hidLoan");
 
-  function recalc() {
-    if (!out) return;
-    var value = parseFloat(valEl && valEl.value);
-    var km = parseFloat(kmEl && kmEl.value);
-    if (!value || value <= 0 || isNaN(km)) {
-      out.textContent = "— €";
-      note.textContent = "Zadajte hodnotu auta a najazdené km.";
-      return;
-    }
-    var rate = rateByKm(km);
-    var estimate = Math.round((value * rate) / 50) * 50; // zaokrúhlenie na 50 €
-    if (estimate < MIN_SUM) estimate = MIN_SUM;
-    out.textContent = fmt.format(estimate);
-    note.textContent = "Orientačne až " + Math.round(rate * 100) + " % hodnoty · min. 1 000 €. Presná suma po obhliadke.";
+  function setEst(avg, loan, market) {
+    if (estAvg) estAvg.textContent = avg != null ? fmt.format(avg) : "—";
+    if (estMarket) estMarket.textContent = market != null ? fmt.format(market) : "—";
+    if (estLoan) estLoan.textContent = loan != null ? fmt.format(loan) : "—";
+    if (hidAvg) hidAvg.value = avg != null ? Math.round(avg) : "";
+    if (hidLoan) hidLoan.value = loan != null ? Math.round(loan) : "";
   }
-  if (valEl) valEl.addEventListener("input", recalc);
-  if (kmEl) kmEl.addEventListener("input", recalc);
+
+  function computeAndShow(avg, km, count) {
+    var market = avg * MARKET_ADJ;
+    var rate = rateByKm(km);
+    var loan = Math.max(MIN_SUM, round50(market * rate));
+    setEst(avg, loan, market);
+    if (estNote) estNote.textContent =
+      "Z " + count + " podobných áut na autobazar.eu · sadzba " + Math.round(rate * 100) +
+      " % podľa km. Orientačné, presnú sumu určíme po obhliadke.";
+  }
+
+  if (calcBtn) {
+    calcBtn.addEventListener("click", function () {
+      var brand = (document.getElementById("brand").value || "").trim();
+      var model = (document.getElementById("model").value || "").trim();
+      var year = parseInt(document.getElementById("year").value, 10);
+      var km = parseFloat(document.getElementById("km").value);
+
+      if (!brand || !model || !year || isNaN(km)) {
+        if (estNote) estNote.textContent = "Vyplňte prosím značku, model, rok výroby aj najazdené km.";
+        return;
+      }
+
+      // Bez nakonfigurovaného backendu (napr. na GitHub Pages) sa nedá scrapovať.
+      if (!API_BASE && location.protocol === "https:" && /github\.io$/.test(location.hostname)) {
+        setEst(null, null, null);
+        if (estNote) estNote.textContent =
+          "Online ocenenie beží na ostrej doméne (autokassa.sk). Tu v náhľade vyplňte kontakt nižšie a my vám obratom pošleme presný prepočet.";
+        return;
+      }
+
+      var url = API_BASE + API_PATH +
+        "?znacka=" + encodeURIComponent(brand) +
+        "&model=" + encodeURIComponent(model) +
+        "&rok=" + encodeURIComponent(year) +
+        "&km=" + encodeURIComponent(km);
+
+      calcBtn.disabled = true;
+      var orig = calcBtn.textContent;
+      calcBtn.textContent = "Hľadám podobné autá…";
+      if (estBox) estBox.classList.add("loading");
+      if (estNote) estNote.textContent = "Porovnávam podobné " + brand + " " + model + " na autobazar.eu…";
+
+      fetch(url, { headers: { "Accept": "application/json" } })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data && data.ok && data.avg > 0 && data.count > 0) {
+            computeAndShow(data.avg, km, data.count);
+          } else {
+            setEst(null, null, null);
+            if (estNote) estNote.textContent =
+              (data && data.message) ||
+              "Nenašli sme dosť podobných áut. Nechajte nám kontakt nižšie a oceníme auto ručne.";
+          }
+        })
+        .catch(function () {
+          setEst(null, null, null);
+          if (estNote) estNote.textContent =
+            "Ocenenie sa teraz nepodarilo. Nechajte nám kontakt nižšie alebo zavolajte na 0908 589 181.";
+        })
+        .finally(function () {
+          calcBtn.disabled = false;
+          calcBtn.textContent = orig;
+          if (estBox) estBox.classList.remove("loading");
+        });
+    });
+  }
 
   /* --- Odoslanie formulára --- */
   var form = document.getElementById("quoteForm");
