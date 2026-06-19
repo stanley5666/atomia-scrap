@@ -369,28 +369,34 @@ body.menu-open .nav-toggle span::after  { transform: rotate(-45deg); }
 }
 .hero-card h3 { font-size: 1.1rem; }
 .hero-card .ring {
+  position: relative;
+  width: 140px; height: 140px;
+  margin: .5rem auto 1.1rem;
   display: grid;
   place-items: center;
-  width: 132px; height: 132px;
-  margin: .5rem auto 1rem;
-  border-radius: 50%;
-  background: conic-gradient(var(--brand) 0 90%, var(--brand-tint) 90% 100%);
-  position: relative;
 }
-.hero-card .ring::after {
-  content: "";
+.hero-card .ring svg { width: 140px; height: 140px; display: block; }
+.hero-card .ring-track {
+  fill: none;
+  stroke: var(--brand-tint);
+  stroke-width: 11;
+}
+.hero-card .ring-prog {
+  fill: none;
+  stroke: var(--brand);
+  stroke-width: 11;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s cubic-bezier(.4,0,.2,1);
+}
+.hero-card .ring-label {
   position: absolute;
-  inset: 12px;
-  background: #fff;
-  border-radius: 50%;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
 }
-.hero-card .ring b {
-  position: relative;
-  z-index: 1;
-  font-size: 1.7rem;
-  color: var(--brand-dark);
-}
-.hero-card .ring b span { font-size: .8rem; display: block; font-weight: 700; color: var(--muted); }
+.hero-card .ring-label b { font-size: 1.9rem; font-weight: 800; color: var(--brand-dark); line-height: 1; letter-spacing: -.02em; }
+.hero-card .ring-label span { display: block; margin-top: 3px; font-size: .72rem; font-weight: 700; color: var(--muted); }
 .mini-list { display: grid; gap: .6rem; margin-top: 1rem; }
 .mini-list li { display: flex; justify-content: space-between; gap: 1rem; padding: .55rem .2rem; border-bottom: 1px dashed var(--line); font-size: .95rem; }
 .mini-list li:last-child { border-bottom: 0; }
