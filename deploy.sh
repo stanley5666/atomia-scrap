@@ -11,7 +11,7 @@ set -euo pipefail
 
 FTP_HOST="${FTP_HOST:-ftp.kseftar.sk}"
 FTP_USER="${FTP_USER:-}"
-REMOTE_DIR="${REMOTE_DIR:-/fuznaarena}"
+REMOTE_DIR="${REMOTE_DIR:-/www_root_tobiaskarafa_sk/fusion}"
 LOCAL_DIR="${LOCAL_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/public}"
 USE_FTPS="${USE_FTPS:-1}"     # 1 = vyžadovať šifrovanie (FTPS), 0 = obyčajné FTP
 ASSUME_YES=0
@@ -58,6 +58,20 @@ Spusti najprv: FTP_USER=$FTP_USER ./deploy.sh save-password"
     | curl --config - --connect-timeout 20 --max-time 300 "${tls[@]}" "$@"
 }
 
+# Hosting pomenúva korene webov ako www_root_<domena_s_podtrznikmi>,
+# takže z cesty vieme zložiť výslednú URL.
+public_url() {
+  if [[ -n "${PUBLIC_URL:-}" ]]; then printf '%s' "${PUBLIC_URL%/}"; return; fi
+  if [[ "$REMOTE_DIR" =~ www_root_([A-Za-z0-9_-]+) ]]; then
+    local raw="${BASH_REMATCH[1]}" dom rest
+    dom="${raw//_/.}"
+    rest="${REMOTE_DIR#*"$raw"}"
+    printf 'https://%s%s' "$dom" "${rest%/}"
+  else
+    printf 'https://%s%s' "${FTP_HOST#ftp.}" "${REMOTE_DIR%/}"
+  fi
+}
+
 remote_ls() {
   need_user ls
   local path="${1:-/}"
@@ -99,8 +113,8 @@ deploy() {
   done
 
   echo
-  info "Nahrané. Skús: https://${FTP_HOST#ftp.}${REMOTE_DIR%/}/"
-  echo "(Ak je koreň FTP inde než koreň webu, uprav REMOTE_DIR — pomôže ./deploy.sh ls /)"
+  info "Nahrané. Skús: $(public_url)/"
+  echo "(Ak by adresa nesedela, over si cestu cez ./deploy.sh ls /)"
 }
 
 cmd="${1:-deploy}"; shift || true

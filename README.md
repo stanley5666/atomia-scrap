@@ -1,7 +1,8 @@
 # Fúzna aréna — nasadenie na web
 
 `public/index.html` je hotová hra (jeden samostatný súbor, žiadny build).
-`deploy.sh` ju nahrá na FTP, pričom heslo číta z macOS Keychainu.
+`deploy.sh` ju nahrá na `ftp.kseftar.sk` do `www_root_tobiaskarafa_sk/fusion`,
+pričom heslo číta z macOS Keychainu.
 
 ## Prvé spustenie
 
@@ -26,19 +27,30 @@ Aby si nemusel `FTP_USER` písať zakaždým, zapíš si ho priamo do hlavičky 
 
 ## Kam sa to nahrá
 
-Predvolene do podadresára `/fuznaarena`, takže sa **neprepíše existujúca titulná
-stránka**. Výsledná adresa býva `https://kseftar.sk/fuznaarena/`.
+Natvrdo nastavené na `/www_root_tobiaskarafa_sk/fusion`, čiže výsledná adresa je
 
-Koreň FTP sa ale nemusí rovnať koreňu webu — na mnohých hostingoch je web až
-v `www/`, `public_html/` alebo `httpdocs/`. Preto ten krok `ls /`. Podľa toho, čo
-uvidíš, uprav cestu:
+**https://tobiaskarafa.sk/fusion/**
+
+Skript si tú adresu odvodí sám z názvu adresára (`www_root_<domena>` → doména).
+Ak by nesedela, prebi ju cez `PUBLIC_URL`.
+
+Nahráva sa do podadresára `fusion`, takže sa **neprepíše titulná stránka**
+`tobiaskarafa.sk`. Skript nikdy nič nemaže — súbory s rovnakým názvom prepíše,
+ostatné nechá na pokoji. Pred nahrávaním vypíše, čo presne pošle, a počká na
+potvrdenie (`-y` to preskočí).
+
+Ak by cesta na serveri vyzerala inak, pozri sa na ňu:
 
 ```bash
-REMOTE_DIR=/www/fuznaarena FTP_USER=meno ./deploy.sh deploy
+FTP_USER=meno ./deploy.sh ls /
+FTP_USER=meno ./deploy.sh ls /www_root_tobiaskarafa_sk
 ```
 
-Skript nikdy nič nemaže — súbory s rovnakým názvom prepíše, ostatné nechá na pokoji.
-Pred nahrávaním vypíše, čo presne pošle, a počká na potvrdenie (`-y` to preskočí).
+a prípadne ju prebi:
+
+```bash
+REMOTE_DIR=/ina/cesta FTP_USER=meno ./deploy.sh deploy
+```
 
 ## Ak nejde pripojenie
 
