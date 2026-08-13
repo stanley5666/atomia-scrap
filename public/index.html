@@ -63,38 +63,22 @@ header{text-align:center}
 .stats{margin-top:8px;font-size:15px}
 .stats b{color:var(--dim);font-size:10.5px;margin:0 3px 0 9px;letter-spacing:.1em}
 .roles{margin-top:5px;font-size:11px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
-.ring{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-.fCard{border:1px solid var(--line);background:var(--pan);padding:8px}
-.fCard.act{border-color:var(--c);box-shadow:0 0 18px -6px var(--c)}
-.fCard.hit{animation:sh .3s}
-@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-.fTop{display:flex;justify-content:space-between;align-items:baseline}
-.fTeam{font-size:10.5px;letter-spacing:.14em;color:var(--dim)}
-.fCode{font-family:Anton,Impact,sans-serif;font-size:15px;color:var(--c)}
-.hpWrap{position:relative;height:17px;background:#241f30;margin-top:6px;overflow:hidden}
-.hpBar{position:absolute;inset:0 auto 0 0;background:var(--c);transition:width .35s}
-.shBar{position:absolute;top:0;left:0;height:4px;background:#ffc93c}
-.hpTxt{position:absolute;inset:0;display:grid;place-items:center;font-size:12px;font-weight:700;text-shadow:0 1px 2px #000}
-.m{display:flex;align-items:center;gap:5px;font-size:9.5px;color:var(--dim);letter-spacing:.1em;margin-top:4px}
-.m i{flex:1;height:4px;background:#2ee0ff2e;position:relative;display:block}
-.m i s{position:absolute;inset:0 auto 0 0;background:#2ee0ff;display:block}
-.m.ult i{background:#ffc93c2e}.m.ult i s{background:#ffc93c}
-.fx{display:flex;gap:6px;font-size:11px;margin-top:5px;min-height:14px;color:var(--dim)}
-.log{margin-top:10px;height:130px;overflow-y:auto;border:1px solid var(--line);background:#0d0b14;padding:8px 10px;font-size:13.5px;line-height:1.5}
-.turnBar{margin-top:10px;font-family:Anton,Impact,sans-serif;font-size:16px;color:var(--c);letter-spacing:.08em;display:flex;justify-content:space-between;align-items:center}
-.autoTog{font-family:'Barlow Condensed',sans-serif;font-size:12.5px;color:var(--dim);display:flex;gap:5px;align-items:center}
-.abGrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
-.ab{background:var(--pan);border:1px solid var(--line);padding:6px 8px;text-align:left;display:flex;gap:7px;align-items:center;transition:transform .1s}
-.ab:active{transform:scale(.97)}
-.ab:disabled{opacity:.3;cursor:not-allowed}
-.ab .pic{width:30px;height:30px;flex:0 0 auto;overflow:hidden;border:1px solid #322c40}
-.abN{font-size:12.5px;font-weight:700;line-height:1.15;display:block}
-.abM{font-size:10.5px;color:var(--dim);letter-spacing:.04em;display:block}
-.ultBtn{grid-column:1/-1;border-color:#ffc93c;background:linear-gradient(92deg,#241d0e,#15121f);justify-content:center}
-.ultBtn:not(:disabled) .abN{color:#ffc93c}
-.win{margin-top:16px;text-align:center;border:1px solid var(--c);padding:18px;background:var(--pan)}
-.winCode{font-family:Anton,Impact,sans-serif;font-size:38px;color:var(--c);transform:skewX(-7deg)}
-.winTxt{font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.vVerdict{font-family:Anton,Impact,sans-serif;font-size:34px;color:var(--c);transform:skewX(-7deg);line-height:1.05;margin-top:10px}
+.vSub{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-top:5px}
+.vConf{font-size:12.5px;letter-spacing:.06em;color:var(--dim);margin-top:9px;line-height:1.5}
+.dims{display:grid;gap:8px;margin-top:18px;text-align:left}
+.dim{display:grid;grid-template-columns:74px 1fr;gap:8px;align-items:center}
+.dimL{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.dimBar{display:flex;align-items:center;gap:7px}
+.dimV{font-size:11.5px;font-weight:700;min-width:46px;font-variant-numeric:tabular-nums}
+.dimV.l{text-align:right}
+.half{flex:1;height:15px;display:flex;background:#1d1a26;border-top:1px solid #262232;border-bottom:1px solid #262232}
+.half.l{justify-content:flex-end;border-left:1px solid #262232}
+.half.r{border-right:1px solid #262232}
+.half i{display:block;height:100%;transition:width .45s}
+.why{margin-top:18px;text-align:left;display:grid;gap:7px}
+.why div{font-size:13.5px;line-height:1.45;padding-left:15px;position:relative}
+.why div::before{content:"";position:absolute;left:0;top:6.5px;width:6px;height:6px;background:var(--c)}
 .hRow{border:1px solid var(--line);background:var(--pan);padding:9px 10px;margin-bottom:8px}
 .hHead{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);letter-spacing:.08em}
 .hSide{display:flex;align-items:center;gap:6px;margin-top:6px}
@@ -106,11 +90,7 @@ header{text-align:center}
 .hAct button{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;background:transparent;border:1px solid var(--line);padding:5px 10px}
 .empty{text-align:center;color:var(--dim);font-size:14px;padding:26px 10px;border:1px dashed var(--line);margin-top:12px}
 .btn.sm{padding:6px 12px;font-size:12.5px;letter-spacing:.08em}
-.simRow{display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:10px;
- font-size:12.5px;color:var(--dim);letter-spacing:.06em;grid-column:1/-1}
-.ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px;font-size:12.5px;color:var(--dim);letter-spacing:.05em}
-.ctrl label{display:flex;gap:4px;align-items:center}
-.ctrl select{background:var(--pan);color:var(--txt);border:1px solid var(--line);font-family:inherit;font-size:12.5px;padding:4px 6px}
+
 .simPanel{border:1px solid var(--line);background:var(--pan);padding:16px;margin-top:14px;text-align:center}
 .simTitle{font-family:Anton,Impact,sans-serif;font-size:22px;letter-spacing:.04em}
 .simBar{display:flex;height:34px;margin:14px 0 6px;overflow:hidden;border:1px solid var(--line)}
@@ -129,7 +109,6 @@ header{text-align:center}
 .avIn{width:100%;margin-top:2px;background:#0d0b14;border:1px solid var(--line);border-top:0;color:var(--txt);
  font-family:inherit;font-size:10.5px;padding:4px 5px}
 .btn.on{border-color:#ffc93c;color:#ffc93c}
-.abH{font-size:10px;color:#ffc93c;letter-spacing:.06em;display:block}
 .stack .p i{position:absolute;left:0;right:0;bottom:-13px;font-style:normal;font-size:8.5px;
  color:var(--dim);text-align:center;letter-spacing:.02em}
 .stack{height:118px}
@@ -146,7 +125,7 @@ header{text-align:center}
 <div class="wrap">
   <header>
     <div class="brand">FÚZNA ARÉNA</div>
-    <div class="sub">7 hrdinov → 1 šampión → jeden víťaz</div>
+    <div class="sub">7 hrdinov → 1 fúzia → ktorá je silnejšia</div>
   </header>
   <div id="app"></div>
 </div>
@@ -341,7 +320,7 @@ function damage(src,tgt,ab){
 }
 
 /* ======================= STAV ======================= */
-const S={view:"draft",phase:"draft",picks:[[],[]],turn:0,F:null,active:0,log:[],winner:null,ai:[false,true],speed:420,turns:0,sim:null,busy:false,shake:null,hist:[],curId:null,custom:{},edit:false,filter:null};
+const S={view:"draft",phase:"draft",picks:[[],[]],turn:0,F:null,verdict:null,hist:[],curId:null,custom:{},edit:false,filter:null};
 const app=document.getElementById("app");
 const taken=()=>new Set([...S.picks[0],...S.picks[1]]);
 const full=()=>S.picks[0].length===7&&S.picks[1].length===7;
@@ -370,8 +349,9 @@ function recordTeams(){
  S.hist.unshift({id:S.curId,ts:S.curId,a:S.picks[0].slice(),b:S.picks[1].slice(),ca:S.F[0].code,cb:S.F[1].code,w:null});
  saveHist();
 }
-function recordWinner(w){
- const e=S.hist.find(x=>x.id===S.curId); if(e){e.w=w;saveHist();}
+function recordVerdict(){
+ const e=S.hist.find(x=>x.id===S.curId);
+ if(e){e.w=S.verdict.w;e.sim=S.verdict.wins[0]+"–"+S.verdict.wins[1];saveHist();}
 }
 function delHist(id){S.hist=S.hist.filter(x=>x.id!==id);saveHist();render();}
 function loadTeams(id){
@@ -404,21 +384,11 @@ function fillGroup(){
  if(S.picks[1-t].length<7)S.turn=1-t;
  render();
 }
-function clearDraft(){S.picks=[[],[]];S.turn=0;S.F=null;S.log=[];S.winner=null;S.sim=null;S.phase="draft";S.view="draft";S.filter=null;render();}
+function clearDraft(){S.picks=[[],[]];S.turn=0;S.F=null;S.verdict=null;S.phase="draft";S.view="draft";S.filter=null;render();}
 function startFusion(){S.F=[fuse(S.picks[0],0),fuse(S.picks[1],1)];S.phase="fusion";recordTeams();render();}
-function startBattle(){
- const first=S.F[0].spd>=S.F[1].spd?0:1;
- S.active=first;S.turns=0;S.log=[{t:-1,m:T[first].name+" je rýchlejší a začína."}];
- S.phase="battle";S.view="draft";S.winner=null;render();aiTick();
-}
-function startManual(){S.ai=[false,true];S.sim=null;startBattle();}
-function rematch(){
- S.F=[fuse(S.picks[0],0),fuse(S.picks[1],1)];recordTeams();startBattle();
-}
-function backToFusion(){S.F=[fuse(S.picks[0],0),fuse(S.picks[1],1)];S.phase="fusion";S.winner=null;S.log=[];render();}
+function backToFusion(){S.F=[fuse(S.picks[0],0),fuse(S.picks[1],1)];S.phase="fusion";S.verdict=null;render();}
 
-/* ---- boj: jadro (spolocne pre hru aj simulaciu) ---- */
-function push(m,t){S.log.push({m,t});if(S.log.length>60)S.log.shift();}
+/* ---- jadro modelovania (beží skryto, len ako podklad pre verdikt) ---- */
 
 function resolve(me,foe,idx){
  const ult=idx===-1,hero=ult?null:me.parts[idx];
@@ -467,39 +437,6 @@ function chooseAI(me,foe){
  return opts[0].i;
 }
 
-/* ---- hrany hry ---- */
-function act(idx){
- if(S.busy||S.winner!=null)return;
- S.busy=true;
- const me=S.F[S.active],foe=S.F[1-S.active];
- const R=resolve(me,foe,idx);
- if(R.hit){S.shake=1-S.active;setTimeout(()=>{S.shake=null;},Math.min(330,S.speed));}
- push(R.line,S.active);S.turns++;render();
- setTimeout(()=>{
-  if(foe.hp<=0)return finish(S.active);
-  endTurn();
- },S.speed);
-}
-function endTurn(){
- const next=1-S.active,nf=S.F[next],u=upkeep(nf);
- if(u.burn>0)push("🔥 "+T[next].name+" stráca "+u.burn+" hp z horiacej rany.",next);
- if(u.dead)return finish(S.active);
- if(u.stunned){push("💫 "+T[next].name+" je omráčený a vynecháva ťah.",next);S.busy=false;render();aiTick();return;}
- S.active=next;S.busy=false;render();aiTick();
-}
-function finish(w){
- S.winner=w;push(T[w].name+" vyhráva po "+S.turns+" ťahoch.",w);recordWinner(w);S.busy=false;render();
-}
-function aiTick(){
- if(S.phase!=="battle"||S.winner!=null||!S.ai[S.active])return;
- setTimeout(()=>{
-  if(S.phase!=="battle"||S.winner!=null||!S.ai[S.active]||S.busy)return;
-  act(chooseAI(S.F[S.active],S.F[1-S.active]));
- },Math.max(60,S.speed));
-}
-function setAI(t,v){S.ai[t]=v;render();aiTick();}
-function setSpeed(v){S.speed=+v;render();}
-function simulateRest(){S.ai=[true,true];render();aiTick();}
 function setView(v){S.view=v;render();}
 
 /* ---- davkova simulacia (bez animacie) ---- */
@@ -516,34 +453,90 @@ function simulateOne(p0,p1){
  }
  return {w:-1,turns:400,hp:0};
 }
-function runBatch(n){
- const wins=[0,0];let draws=0,turns=0,hp=[0,0];
- for(let i=0;i<n;i++){
+/* ======================= VYHODNOTENIE ======================= */
+const EVAL_RUNS=600;
+
+// Koľko schopností v tíme nesie ktorý efekt.
+function kit(f){
+ const k={shield:0,heal:0,stun:0,dot:0,pierce:0,crit:0,defDown:0,atkUp:0};
+ f.parts.forEach(h=>{const a=h.ab;
+  if(a.shield)k.shield++; if(a.heal)k.heal++; if(a.stun)k.stun++; if(a.dot)k.dot++;
+  if(a.pierce)k.pierce++; if(a.crit)k.crit++; if(a.defDown)k.defDown++; if(a.atkUp)k.atkUp++;});
+ return k;
+}
+
+// Štyri rozmery sily. Vzorce zámerne kopírujú to, čo naozaj robí damage() a upkeep(),
+// aby sa rozbor nerozchádzal s číslom zo simulácií.
+function analyse(f){
+ const abs=f.parts.map(h=>h.ab);
+ const avgP=abs.reduce((s,a)=>s+a.p,0)/abs.length;
+ const avgCost=abs.reduce((s,a)=>s+a.cost,0)/abs.length;
+ const k=kit(f);
+ return {
+  utok:     f.atk*(avgP/60)*(1+(f.regen-avgCost)/140),
+  odolnost: f.maxHp*(100+f.def*.75)/100,
+  tempo:    f.spd*(1+f.regen/90),
+  vybava:   k.shield*26+k.heal*30+k.stun*34+k.dot*22+k.pierce*20+k.crit*18+k.defDown*14+k.atkUp*14,
+  avgP,avgCost,k
+ };
+}
+
+function reasons(F,A){
+ const out=[],n=v=>Math.round(v).toLocaleString("sk-SK");
+ const dim=(label,key)=>{
+  const a=A[0][key],b=A[1][key];
+  const hi=a>=b?0:1, ha=Math.max(a,b), la=Math.min(a,b);
+  const rel=la>0?(ha-la)/la*100:100;
+  if(rel<7)return;
+  out.push({t:hi,mag:rel,txt:`${label}: ${T[hi].name} vedie o ${Math.round(rel)} % (${n(ha)} proti ${n(la)}).`});
+ };
+ dim("Útočný výkon","utok"); dim("Výdrž","odolnost");
+ dim("Tempo","tempo"); dim("Výbava schopností","vybava");
+
+ const names={stun:"omráčenie",heal:"liečenie",shield:"štít",dot:"horiacu ranu",
+              pierce:"prienik obranou",crit:"kritický zásah"};
+ Object.keys(names).forEach(key=>{
+  const a=A[0].k[key],b=A[1].k[key];
+  if(a===b)return;
+  const hi=a>b?0:1;
+  out.push({t:hi,mag:Math.abs(a-b)*9,
+   txt:`${T[hi].name} má viac schopností na ${names[key]} — ${Math.max(a,b)} proti ${Math.min(a,b)}.`});
+ });
+
+ F.forEach((f,i)=>{ if(f.pure&&!F[1-i].pure)
+  out.push({t:i,mag:13,txt:`${T[i].name} je zložený len zo skupiny ${f.pure}, čo mu dvíha štatistiky o 8 %.`}); });
+
+ const first=F[0].spd>=F[1].spd?0:1;
+ out.push({t:first,mag:6,txt:`${T[first].name} je rýchlejší, takže do stretnutia vstupuje prvý.`});
+
+ return out.sort((x,y)=>y.mag-x.mag).slice(0,6);
+}
+
+function runEval(){
+ const wins=[0,0]; let draws=0,turns=0;
+ for(let i=0;i<EVAL_RUNS;i++){
   const r=simulateOne(S.picks[0],S.picks[1]);
   turns+=r.turns;
-  if(r.w<0)draws++;else{wins[r.w]++;hp[r.w]+=r.hp;}
+  if(r.w<0)draws++; else wins[r.w]++;
  }
- const prev=S.sim&&S.sim.n?S.sim:null;
- S.sim={n:n+(prev?prev.n:0),
-  wins:[wins[0]+(prev?prev.wins[0]:0),wins[1]+(prev?prev.wins[1]:0)],
-  draws:draws+(prev?prev.draws:0),
-  turns:Math.round((turns+(prev?prev.turns*prev.n:0))/(n+(prev?prev.n:0))),
-  hp:[wins[0]?Math.round(hp[0]/wins[0]):0,wins[1]?Math.round(hp[1]/wins[1]):0]};
- S.phase="sim";S.view="draft";
- const e=S.hist.find(x=>x.id===S.curId);
- if(e){e.sim=S.sim.wins[0]+"–"+S.sim.wins[1]+" z "+S.sim.n;saveHist();}
- render();
+ const decided=Math.max(1,wins[0]+wins[1]);
+ const share=[wins[0]/decided*100,wins[1]/decided*100];
+ const edge=Math.abs(share[0]-share[1]);
+ const w=edge<4?-1:(share[0]>share[1]?0:1);
+ const conf=edge<14?"tesne":edge<34?"jasne":edge<62?"výrazne":"drvivo";
+ const A=[analyse(S.F[0]),analyse(S.F[1])];
+ S.verdict={wins,draws,share,w,edge,conf,runs:EVAL_RUNS,
+            turns:Math.round(turns/EVAL_RUNS),A,why:reasons(S.F,A)};
+ S.phase="verdict"; S.view="draft";
+ recordVerdict(); render();
 }
-function startSim(){S.ai=[true,true];S.sim=null;startBattle();}
 
 /* ======================= RENDER ======================= */
 function render(){
  if(S.view==="hist"){app.innerHTML=tabs()+histView();return;}
- if(S.phase==="draft")app.innerHTML=tabs()+draftView();
- else if(S.phase==="sim")app.innerHTML=simView();
+ if(S.phase==="verdict")app.innerHTML=verdictView();
  else if(S.phase==="fusion")app.innerHTML=fusionView();
- else app.innerHTML=battleView();
- const lg=document.getElementById("log");if(lg)lg.scrollTop=lg.scrollHeight;
+ else app.innerHTML=tabs()+draftView();
 }
 function tabs(){
  return `<div class="tabs">
@@ -590,91 +583,48 @@ function fusionView(){
    <div class="roles">${f.roles.join(" · ")}${f.pure?` <span class="badge">· JEDNOTNÝ TÍM +8%</span>`:""}</div></div>`;
  });
  h+=`<div class="actions"><button class="btn" onclick="clearDraft()">Späť na draft</button>
-  <button class="btn" onclick="startManual()">Hrať manuálne</button>
-  <button class="btn main" onclick="startSim()">Simulovať súboj</button></div>
-  <div class="simRow"><span>Rýchla simulácia bez animácie:</span>
-  <button class="btn sm" onclick="runBatch(1)">1×</button>
-  <button class="btn sm" onclick="runBatch(50)">50×</button>
-  <button class="btn sm" onclick="runBatch(500)">500×</button></div></div>`;
+  <button class="btn main" onclick="runEval()">Ktorá fúzia je silnejšia?</button></div></div>`;
  return h;
 }
-function battleView(){
- let h=`<div class="ring">`;
- S.F.forEach(f=>{
-  const pct=(f.hp/f.maxHp)*100;
-  h+=`<div class="fCard ${S.active===f.team&&S.winner==null?"act":""} ${S.shake===f.team?"hit":""}" style="--c:${T[f.team].c}">
-   <div class="fTop"><span class="fTeam">${T[f.team].name}</span><span class="fCode">${f.code}</span></div>
-   <div class="mini">${f.parts.map(p=>`<span title="${p.n}">${face(p.id)}</span>`).join("")}</div>
-   <div class="names">${f.parts.map(p=>p.n).join(" · ")}</div>
-   <div class="hpWrap"><div class="hpBar" style="width:${pct}%"></div>${f.shield>0?`<div class="shBar" style="width:${Math.min(100,f.shield/f.maxHp*100)}%"></div>`:""}<span class="hpTxt">${f.hp}${f.shield>0?" +"+f.shield:""}</span></div>
-   <div class="m"><span>EN</span><i><s style="width:${f.en}%"></s></i></div>
-   <div class="m ult"><span>ULT</span><i><s style="width:${f.charge}%"></s></i></div>
-   <div class="fx">${f.dot.length?"🔥"+f.dot.reduce((s,d)=>s+d.d,0):""} ${f.stun?"💫":""} ${f.atkUp?"⬆"+f.atkUp:""} ${f.defDown?"🛡−"+f.defDown:""}</div></div>`;
- });
- h+=`</div><div class="log" id="log">`+S.log.map(l=>`<div style="color:${l.t===0?T[0].c:l.t===1?T[1].c:"#8b869c"}">${l.m}</div>`).join("")+`</div>`;
- if(S.winner==null){
-  const f=S.F[S.active],lock=S.busy||S.ai[S.active];
-  h+=`<div class="turnBar" style="--c:${T[S.active].c}">NA ŤAHU: ${T[S.active].name} <span style="font-family:'Barlow Condensed';font-size:12px;color:var(--dim);letter-spacing:.1em">ŤAH ${S.turns+1}</span></div>
-   <div class="ctrl">
-    <label><input type="checkbox" ${S.ai[0]?"checked":""} onchange="setAI(0,this.checked)"> AI tím 1</label>
-    <label><input type="checkbox" ${S.ai[1]?"checked":""} onchange="setAI(1,this.checked)"> AI tím 2</label>
-    <select onchange="setSpeed(this.value)">
-     <option value="900" ${S.speed==900?"selected":""}>pomaly</option>
-     <option value="420" ${S.speed==420?"selected":""}>normál</option>
-     <option value="120" ${S.speed==120?"selected":""}>rýchlo</option>
-     <option value="35" ${S.speed==35?"selected":""}>turbo</option>
-    </select>
-    ${(S.ai[0]&&S.ai[1])?"":'<button class="btn sm" onclick="simulateRest()">Dosimulovať</button>'}
-   </div>
-   <div class="abGrid">
-   <button class="ab ultBtn" ${f.charge<100||lock?"disabled":""} onclick="act(-1)"><span><span class="abN">☄️ FÚZNY PRIELOM</span><span class="abM">${f.charge>=100?"pripravené":"nabité "+Math.round(f.charge)+"%"}</span></span></button>`;
-  f.parts.forEach((p,i)=>{
-   const off=f.cds[i]>0||f.en<p.ab.cost||lock;
-   h+=`<button class="ab" ${off?"disabled":""} onclick="act(${i})"><span class="pic">${face(p.id)}</span><span><span class="abN">${p.ab.name}</span><span class="abH">${p.n}</span><span class="abM">${f.cds[i]>0?"cooldown "+f.cds[i]:p.ab.cost+" en · sila "+p.ab.p}</span></span></button>`;
-  });
-  h+=`</div>`;
- } else {
-  h+=`<div class="win" style="--c:${T[S.winner].c}"><div class="winCode">${S.F[S.winner].code}</div>
-   <div class="winTxt">${T[S.winner].name} vyhráva</div>
-   <div class="winTxt" style="margin-top:4px">${S.turns} ťahov</div>
-   <div class="actions"><button class="btn" onclick="rematch()">Odveta</button>
-   <button class="btn" onclick="runBatch(50)">Simulovať 50×</button>
-   <button class="btn" onclick="setView('hist')">História</button>
-   <button class="btn main" onclick="clearDraft()">Nový draft</button></div></div>`;
- }
- return h;
-}
-function simView(){
- const m=S.sim,tot=Math.max(1,m.wins[0]+m.wins[1]+m.draws);
- const p0=m.wins[0]/tot*100,p1=m.wins[1]/tot*100,pd=m.draws/tot*100;
- const teamRow=(f)=>`<div class="s" style="color:${T[f.team].c}"><b style="font-family:Anton,Impact,sans-serif">${f.code}</b>${f.parts.map(x=>`<span>${face(x.id)}</span>`).join("")}</div>`;
- return `<div class="simPanel">
-  <div class="simTitle">VÝSLEDOK ${m.n} SIMULÁCIÍ</div>
+function verdictView(){
+ const v=S.verdict, w=v.w, c=w<0?"#8b869c":T[w].c;
+ const teamRow=f=>`<div class="s" style="color:${T[f.team].c}"><b style="font-family:Anton,Impact,sans-serif">${f.code}</b>${f.parts.map(x=>`<span title="${x.n}">${face(x.id)}</span>`).join("")}</div>`;
+ // Obe strany sa škálujú k väčšej z nich, aby bol rozdiel naozaj vidieť —
+ // podiel z dvoch podobných čísel by vždy vyzeral ako 50:50.
+ const num=x=>Math.round(x).toLocaleString("sk-SK");
+ const bar=(a,b)=>{
+  const mx=Math.max(a,b,1e-6);
+  return `<span class="dimV l" style="color:${T[0].c}">${num(a)}</span>`+
+         `<div class="half l"><i style="width:${a/mx*100}%;background:${T[0].c}"></i></div>`+
+         `<div class="half r"><i style="width:${b/mx*100}%;background:${T[1].c}"></i></div>`+
+         `<span class="dimV" style="color:${T[1].c}">${num(b)}</span>`;
+ };
+ const dim=(label,key)=>`<div class="dim"><span class="dimL">${label}</span><div class="dimBar">${bar(v.A[0][key],v.A[1][key])}</div></div>`;
+
+ return `<div class="simPanel" style="--c:${c}">
+  <div class="simTitle">VYHODNOTENIE</div>
   <div class="simTeams">${teamRow(S.F[0])}${teamRow(S.F[1])}</div>
-  <div class="simBar">
-   <div style="width:${p0}%;background:${T[0].c}">${p0>12?Math.round(p0)+"%":""}</div>
-   <div style="width:${pd}%;background:#4a4458"></div>
-   <div style="width:${p1}%;background:${T[1].c}">${p1>12?Math.round(p1)+"%":""}</div></div>
-  <div class="simSides"><span>${T[0].name} · ${m.wins[0]} výhier</span><span>${m.wins[1]} výhier · ${T[1].name}</span></div>
-  <div class="simGrid">
-   <div><b>${m.turns}</b><span>priemer ťahov</span></div>
-   <div><b>${m.draws}</b><span>remíz</span></div>
-   <div><b>${m.hp[0]}% / ${m.hp[1]}%</b><span>zvyšné hp víťaza</span></div></div>
+  ${w<0?`<div class="vVerdict">ZHODA</div><div class="vSub">ani jedna fúzia nemá navrch</div>`
+       :`<div class="vVerdict">${S.F[w].code}</div><div class="vSub">${T[w].name} je ${v.conf} silnejší</div>`}
+  <div class="vConf">${Math.round(v.share[0])} % : ${Math.round(v.share[1])} % prevahy · ${v.runs} modelovaných stretnutí<br>
+   stretnutie trvá priemerne ${v.turns} ťahov${v.draws?` · ${v.draws} skončilo bez rozhodnutia`:""}</div>
+  <div class="dims">${dim("Útok","utok")}${dim("Výdrž","odolnost")}${dim("Tempo","tempo")}${dim("Výbava","vybava")}</div>
+  <div class="why">${v.why.map(r=>`<div style="--c:${T[r.t].c}">${r.txt}</div>`).join("")}</div>
   <div class="actions">
-   <button class="btn" onclick="runBatch(50)">Ešte 50×</button>
-   <button class="btn" onclick="startSim()">Pozrieť jeden súboj</button>
+   <button class="btn" onclick="runEval()">Prepočítať</button>
    <button class="btn" onclick="backToFusion()">Späť na fúziu</button>
+   <button class="btn" onclick="setView('hist')">História</button>
    <button class="btn main" onclick="clearDraft()">Nový draft</button></div></div>`;
 }
 function histView(){
- if(!S.hist.length)return `<div class="empty">Zatiaľ žiadne zostavy. Zlož tímy a spusti fúziu — uložia sa sem aj s výsledkom.</div>`;
+ if(!S.hist.length)return `<div class="empty">Zatiaľ žiadne zostavy. Zlož tímy a spusti fúziu — uložia sa sem aj s vyhodnotením.</div>`;
  return S.hist.map(e=>{
   const d=new Date(e.ts),ds=d.toLocaleDateString("sk-SK")+" "+d.toLocaleTimeString("sk-SK",{hour:"2-digit",minute:"2-digit"});
-  const side=(ids,code,t)=>`<div class="hSide ${e.w!=null&&e.w!==t?"lost":""}" style="--c:${T[t].c}">
+  const side=(ids,code,t)=>`<div class="hSide ${e.w!=null&&e.w>=0&&e.w!==t?"lost":""}" style="--c:${T[t].c}">
     <span class="lbl">${code}</span><span class="faces">${ids.map(i=>`<span title="${HEROES[i].n}">${face(i)}</span>`).join("")}</span>
-    ${e.w===t?'<span style="color:#ffc93c;font-size:12px;letter-spacing:.1em">VÍŤAZ</span>':""}</div>
+    ${e.w===t?'<span style="color:#ffc93c;font-size:12px;letter-spacing:.1em">SILNEJŠÍ</span>':""}</div>
     <div class="names" style="text-align:left;margin:0 0 4px 80px">${ids.map(i=>HEROES[i].n).join(" · ")}</div>`;
-  return `<div class="hRow"><div class="hHead"><span>${ds}</span><span>${e.sim?`<span class="badge">sim ${e.sim}</span> · `:""}${e.w==null?"bez výsledku":T[e.w].name+" vyhral"}</span></div>
+  return `<div class="hRow"><div class="hHead"><span>${ds}</span><span>${e.sim?`<span class="badge">${e.sim}</span> · `:""}${e.w==null?"nevyhodnotené":e.w<0?"zhoda":T[e.w].name+" silnejší"}</span></div>
    ${side(e.a,e.ca,0)}${side(e.b,e.cb,1)}
    <div class="hAct"><button onclick="loadTeams(${e.id})">Načítať zostavy</button><button onclick="delHist(${e.id})">Zmazať</button></div></div>`;
  }).join("");
