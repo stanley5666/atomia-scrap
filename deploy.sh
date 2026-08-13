@@ -11,7 +11,7 @@ set -euo pipefail
 
 FTP_HOST="${FTP_HOST:-ftp.kseftar.sk}"
 FTP_USER="${FTP_USER:-}"
-REMOTE_DIR="${REMOTE_DIR:-/www_root_tobiaskarafa_sk/fusion}"
+REMOTE_DIR="${REMOTE_DIR:-/www_root_tobiaskarafa_sk}"
 LOCAL_DIR="${LOCAL_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/public}"
 USE_FTPS="${USE_FTPS:-1}"     # 1 = vyžadovať šifrovanie (FTPS), 0 = obyčajné FTP
 ASSUME_YES=0
@@ -98,6 +98,9 @@ deploy() {
   done
   echo
   echo "Existujúce súbory s rovnakým názvom sa prepíšu. Nič sa nemaže."
+  if [[ "$REMOTE_DIR" =~ ^/www_root_[^/]+/?$ ]]; then
+    printf '\033[33mPozor:\033[0m toto je koreň webu — index.html prepíše titulnú stránku.\n'
+  fi
   if [[ $ASSUME_YES -eq 0 ]]; then
     printf 'Pokračovať? [a/N] '
     local ans; read -r ans
