@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fúzna aréna</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;--ink:#0a0910;--pan:#15121f;--line:#2b2637;--txt:#efe9f5;--dim:#8b869c;
+ font-family:'Barlow Condensed',system-ui,sans-serif;color:var(--txt);
+ background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.055) 1px,transparent 1.6px) 0 0/7px 7px,
+ linear-gradient(180deg,#120f1c,#08070d 60%);background-attachment:fixed;min-height:100vh}
+.wrap{max-width:780px;margin:0 auto;padding:14px 12px 46px}
+button{font-family:inherit;cursor:pointer;color:var(--txt)}
+button:focus-visible{outline:2px solid #ffc93c;outline-offset:2px}
+header{text-align:center}
+.brand{font-family:Anton,Impact,sans-serif;font-size:34px;line-height:1;letter-spacing:.03em;transform:skewX(-7deg);
+ background:linear-gradient(92deg,#ff2f57,#ffc93c 45%,#2ee0ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:12.5px;color:var(--dim);letter-spacing:.16em;text-transform:uppercase}
+.tabs{display:flex;gap:6px;justify-content:center;margin:12px 0 4px}
+.tab{background:transparent;border:1px solid var(--line);padding:6px 14px;font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+.tab.on{border-color:#ffc93c;color:#ffc93c}
+.bar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.slot{border:1px solid var(--line);background:var(--pan);padding:7px 8px}
+.slot.on{border-color:var(--c);box-shadow:0 0 0 1px var(--c) inset}
+.slotName{font-family:Anton,Impact,sans-serif;font-size:15px;color:var(--c);letter-spacing:.06em}
+.chips{display:flex;gap:3px;margin-top:5px}
+.chip{width:26px;height:26px;border:1px solid #2b2836;overflow:hidden;background:#0d0b14;flex:0 0 auto}
+.chip.f{border-color:var(--c)}
+.hint{font-size:14px;color:var(--dim);text-align:center;margin:12px 0 8px;letter-spacing:.04em}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+@media(min-width:560px){.grid{grid-template-columns:repeat(5,1fr)}}
+.cardWrap{background:var(--pan);border:1px solid var(--c,#3a3648);display:flex;flex-direction:column;
+ cursor:pointer;transition:transform .12s;overflow:visible}
+.cardWrap:active{transform:scale(.95)}
+.cardWrap.used{opacity:.42;filter:saturate(.45)}
+.card{background:transparent;border:0;padding:0;display:block;width:100%}
+.card .art{display:block;width:100%;line-height:0}
+.lbl{padding:6px 4px 8px;text-align:center;color:#efe9f5}
+.nm{font-size:12.5px;font-weight:700;line-height:1.15;display:block;color:#efe9f5;overflow-wrap:anywhere}
+.rl{font-size:10.5px;color:#8b869c;letter-spacing:.05em;display:block;margin-top:2px}
+.actions{display:flex;gap:8px;margin-top:16px;justify-content:center;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:transparent;padding:10px 16px;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.btn.main{background:linear-gradient(92deg,#ff2f57,#ffc93c);color:#12101a;border:0}
+.btn:disabled{opacity:.32;cursor:not-allowed}
+.reveal{display:grid;gap:12px;margin-top:14px}
+@media(min-width:560px){.reveal{grid-template-columns:1fr 1fr}.reveal .actions{grid-column:1/-1}}
+.fusePanel{border:1px solid var(--c);background:var(--pan);padding:14px;text-align:center}
+.stack{position:relative;height:104px;display:flex;justify-content:center;align-items:center}
+.stack .p{width:62px;height:62px;border:2px solid var(--c);position:absolute;overflow:hidden;
+ animation:conv .8s cubic-bezier(.5,0,.2,1) both;background:#0d0b14}
+.stack .p:nth-child(1){transform:translateX(-52px) rotate(-8deg)}
+.stack .p:nth-child(2){z-index:2;transform:scale(1.16)}
+.stack .p:nth-child(3){transform:translateX(52px) rotate(8deg)}
+@keyframes conv{from{opacity:0;transform:translateX(0) scale(.4)}}
+.mini{display:flex;gap:3px;justify-content:center;margin-top:8px}
+.mini span{width:22px;height:22px;overflow:hidden;border:1px solid #322c40;background:#0d0b14}
+.code{font-family:Anton,Impact,sans-serif;font-size:30px;color:var(--c);transform:skewX(-7deg);margin-top:6px}
+.title{font-size:12.5px;letter-spacing:.36em;color:var(--dim)}
+.stats{margin-top:8px;font-size:15px}
+.stats b{color:var(--dim);font-size:10.5px;margin:0 3px 0 9px;letter-spacing:.1em}
+.roles{margin-top:5px;font-size:11px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+.ring{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.fCard{border:1px solid var(--line);background:var(--pan);padding:8px}
+.fCard.act{border-color:var(--c);box-shadow:0 0 18px -6px var(--c)}
+.fCard.hit{animation:sh .3s}
+@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.fTop{display:flex;justify-content:space-between;align-items:baseline}
+.fTeam{font-size:10.5px;letter-spacing:.14em;color:var(--dim)}
+.fCode{font-family:Anton,Impact,sans-serif;font-size:15px;color:var(--c)}
+.hpWrap{position:relative;height:17px;background:#241f30;margin-top:6px;overflow:hidden}
+.hpBar{position:absolute;inset:0 auto 0 0;background:var(--c);transition:width .35s}
+.shBar{position:absolute;top:0;left:0;height:4px;background:#ffc93c}
+.hpTxt{position:absolute;inset:0;display:grid;place-items:center;font-size:12px;font-weight:700;text-shadow:0 1px 2px #000}
+.m{display:flex;align-items:center;gap:5px;font-size:9.5px;color:var(--dim);letter-spacing:.1em;margin-top:4px}
+.m i{flex:1;height:4px;background:#2ee0ff2e;position:relative;display:block}
+.m i s{position:absolute;inset:0 auto 0 0;background:#2ee0ff;display:block}
+.m.ult i{background:#ffc93c2e}.m.ult i s{background:#ffc93c}
+.fx{display:flex;gap:6px;font-size:11px;margin-top:5px;min-height:14px;color:var(--dim)}
+.log{margin-top:10px;height:130px;overflow-y:auto;border:1px solid var(--line);background:#0d0b14;padding:8px 10px;font-size:13.5px;line-height:1.5}
+.turnBar{margin-top:10px;font-family:Anton,Impact,sans-serif;font-size:16px;color:var(--c);letter-spacing:.08em;display:flex;justify-content:space-between;align-items:center}
+.autoTog{font-family:'Barlow Condensed',sans-serif;font-size:12.5px;color:var(--dim);display:flex;gap:5px;align-items:center}
+.abGrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.ab{background:var(--pan);border:1px solid var(--line);padding:6px 8px;text-align:left;display:flex;gap:7px;align-items:center;transition:transform .1s}
+.ab:active{transform:scale(.97)}
+.ab:disabled{opacity:.3;cursor:not-allowed}
+.ab .pic{width:30px;height:30px;flex:0 0 auto;overflow:hidden;border:1px solid #322c40}
+.abN{font-size:12.5px;font-weight:700;line-height:1.15;display:block}
+.abM{font-size:10.5px;color:var(--dim);letter-spacing:.04em;display:block}
+.ultBtn{grid-column:1/-1;border-color:#ffc93c;background:linear-gradient(92deg,#241d0e,#15121f);justify-content:center}
+.ultBtn:not(:disabled) .abN{color:#ffc93c}
+.win{margin-top:16px;text-align:center;border:1px solid var(--c);padding:18px;background:var(--pan)}
+.winCode{font-family:Anton,Impact,sans-serif;font-size:38px;color:var(--c);transform:skewX(-7deg)}
+.winTxt{font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.hRow{border:1px solid var(--line);background:var(--pan);padding:9px 10px;margin-bottom:8px}
+.hHead{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);letter-spacing:.08em}
+.hSide{display:flex;align-items:center;gap:6px;margin-top:6px}
+.hSide .lbl{font-family:Anton,Impact,sans-serif;font-size:14px;color:var(--c);min-width:74px}
+.hSide .faces{display:flex;gap:2px}
+.hSide .faces span{width:20px;height:20px;overflow:hidden;border:1px solid #2b2637;background:#0d0b14}
+.hSide.lost{opacity:.45}
+.hAct{display:flex;gap:6px;margin-top:8px}
+.hAct button{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;background:transparent;border:1px solid var(--line);padding:5px 10px}
+.empty{text-align:center;color:var(--dim);font-size:14px;padding:26px 10px;border:1px dashed var(--line);margin-top:12px}
+.btn.sm{padding:6px 12px;font-size:12.5px;letter-spacing:.08em}
+.simRow{display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:10px;
+ font-size:12.5px;color:var(--dim);letter-spacing:.06em;grid-column:1/-1}
+.ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px;font-size:12.5px;color:var(--dim);letter-spacing:.05em}
+.ctrl label{display:flex;gap:4px;align-items:center}
+.ctrl select{background:var(--pan);color:var(--txt);border:1px solid var(--line);font-family:inherit;font-size:12.5px;padding:4px 6px}
+.simPanel{border:1px solid var(--line);background:var(--pan);padding:16px;margin-top:14px;text-align:center}
+.simTitle{font-family:Anton,Impact,sans-serif;font-size:22px;letter-spacing:.04em}
+.simBar{display:flex;height:34px;margin:14px 0 6px;overflow:hidden;border:1px solid var(--line)}
+.simBar div{display:grid;place-items:center;font-family:Anton,Impact,sans-serif;font-size:15px;color:#0d0b14;transition:width .5s}
+.simSides{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);letter-spacing:.08em}
+.simGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.simGrid div{border:1px solid var(--line);padding:8px 4px}
+.simGrid b{display:block;font-family:Anton,Impact,sans-serif;font-size:20px}
+.simGrid span{font-size:10.5px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+.simTeams{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:12px}
+.simTeams .s{display:flex;align-items:center;gap:5px}
+.simTeams .s span{width:20px;height:20px;overflow:hidden;border:1px solid #2b2637}
+.badge{color:#ffc93c}
+.names{font-size:9.5px;line-height:1.35;color:var(--dim);letter-spacing:.02em;margin-top:4px}
+.cardWrap{display:flex;flex-direction:column}
+.avIn{width:100%;margin-top:2px;background:#0d0b14;border:1px solid var(--line);border-top:0;color:var(--txt);
+ font-family:inherit;font-size:10.5px;padding:4px 5px}
+.btn.on{border-color:#ffc93c;color:#ffc93c}
+.abH{font-size:10px;color:#ffc93c;letter-spacing:.06em;display:block}
+.stack .p i{position:absolute;left:0;right:0;bottom:-13px;font-style:normal;font-size:8.5px;
+ color:var(--dim);text-align:center;letter-spacing:.02em}
+.stack{height:118px}
+.filters{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-top:12px}
+.fch{background:transparent;border:1px solid var(--line);color:var(--dim);padding:5px 9px;
+ font-size:11px;letter-spacing:.09em;text-transform:uppercase}
+.fch.on{border-color:#ffc93c;color:#ffc93c}
+.fch.team{border-color:#ff2f57;color:#ff2f57}
+.gp{display:block;font-size:8.5px;letter-spacing:.09em;color:#6f6a80;margin-top:2px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">FÚZNA ARÉNA</div>
+    <div class="sub">7 hrdinov → 1 šampión → jeden víťaz</div>
+  </header>
+  <div id="app"></div>
+</div>
+
+<script>
+/* ======================= HRDINOVIA ======================= */
+const HEROES = [
+ {n:"Iron Man",r:"Tech",atk:78,def:66,spd:72,hp:70,en:16,ab:{name:"Repulzný výboj",p:62,cost:20,cd:0},f:{t:"visor",b:"#c8392f",bg:"#4a1512",gl:"#8fe6ff",plate:"#f0c245"}},
+ {n:"Captain America",r:"Taktik",atk:64,def:86,spd:66,hp:78,en:14,ab:{name:"Vrh štítom",p:48,cost:22,cd:1,shield:40},f:{t:"mask",b:"#2f5fbf",bg:"#12224d",lz:"#eef3ff",stripe:"#e8e8ee"}},
+ {n:"Thor",r:"Kozmik",atk:92,def:74,spd:68,hp:84,en:12,ab:{name:"Blesk Mjolnira",p:86,cost:36,cd:2},f:{t:"open",sk:"#e8bb92",bg:"#1d2a4d",hr:"#e6d49a",hair:"long",ey:"#8fe6ff",beard:1}},
+ {n:"Hulk",r:"Sila",atk:95,def:70,spd:48,hp:95,en:10,ab:{name:"Zúrivý úder",p:92,cost:40,cd:2},f:{t:"open",sk:"#57a94f",bg:"#153018",hr:"#1e3b20",hair:"short",ey:"#123312",brow:1}},
+ {n:"Black Widow",r:"Agent",atk:62,def:58,spd:88,hp:58,en:18,ab:{name:"Vdovské žihadlo",p:44,cost:20,cd:1,stun:.35},f:{t:"open",sk:"#e3b391",bg:"#301218",hr:"#b0341f",hair:"long",ey:"#3a6b4a"}},
+ {n:"Hawkeye",r:"Agent",atk:66,def:52,spd:80,hp:56,en:18,ab:{name:"Výbušný šíp",p:58,cost:22,cd:1},f:{t:"band",sk:"#e0b48c",bg:"#2d1a44",hr:"#7a5a32",hair:"short",b:"#6f42a1"}},
+ {n:"Spider-Man",r:"Agilita",atk:70,def:56,spd:94,hp:62,en:18,ab:{name:"Pavučinová pasca",p:40,cost:18,cd:0,defDown:25},f:{t:"mask",b:"#cf3040",bg:"#12235e",lz:"#f2f6ff",big:1}},
+ {n:"Doctor Strange",r:"Mág",atk:80,def:72,spd:70,hp:68,en:20,ab:{name:"Zrkadlová dimenzia",p:30,cost:26,cd:2,shield:90},f:{t:"open",sk:"#e0b189",bg:"#3a1116",hr:"#2f2a2a",hair:"short",ey:"#5a4a3a",beard:1,collar:"#a8202a"}},
+ {n:"Black Panther",r:"Taktik",atk:76,def:80,spd:82,hp:70,en:14,ab:{name:"Kinetický výboj",p:66,cost:26,cd:1},f:{t:"mask",b:"#241f33",bg:"#0f0c1c",lz:"#9b86f0",cowl:1}},
+ {n:"Scarlet Witch",r:"Mág",atk:94,def:50,spd:74,hp:64,en:16,ab:{name:"Chaos",p:72,cost:34,cd:2,dot:34},f:{t:"open",sk:"#e6b795",bg:"#3e0f18",hr:"#8c2018",hair:"long",ey:"#ff5a6a",glowEy:1}},
+ {n:"Vision",r:"Tech",atk:74,def:88,spd:76,hp:72,en:14,ab:{name:"Fázový úder",p:58,cost:26,cd:1,pierce:!0},f:{t:"mask",b:"#a83030",bg:"#2e1620",lz:"#f5d76a",gem:"#ffd75c"}},
+ {n:"Ant-Man",r:"Tech",atk:58,def:62,spd:84,hp:54,en:20,ab:{name:"Obrí úder",p:74,cost:30,cd:2},f:{t:"visor",b:"#a02b2b",bg:"#2a1010",gl:"#cfd6de",plate:"#3a3f4a",ant:1}},
+ {n:"Wasp",r:"Tech",atk:60,def:56,spd:90,hp:52,en:20,ab:{name:"Bodavý roj",p:34,cost:16,cd:0,dot:22},f:{t:"visor",b:"#e8b425",bg:"#3a2a06",gl:"#2ee0ff",plate:"#2b2b3a",ant:1}},
+ {n:"Captain Marvel",r:"Kozmik",atk:96,def:78,spd:86,hp:82,en:12,ab:{name:"Binárna žiara",p:96,cost:44,cd:3},f:{t:"mask",b:"#26397f",bg:"#101a44",lz:"#ffe07a",crest:"#e0c14a"}},
+ {n:"Star-Lord",r:"Agent",atk:70,def:66,spd:80,hp:66,en:20,ab:{name:"Elementálne pištole",p:56,cost:20,cd:0},f:{t:"visor",b:"#7d2b2b",bg:"#2a1416",gl:"#ff7a4a",plate:"#4a4a55"}},
+ {n:"Groot",r:"Sila",atk:62,def:92,spd:44,hp:94,en:14,ab:{name:"Koreňová klietka",p:34,cost:28,cd:2,shield:70,stun:.3},f:{t:"open",sk:"#7a5a37",bg:"#1c2a14",hr:"#3f5f2a",hair:"leaf",ey:"#ffd25c",glowEy:1,bark:1}},
+ {n:"Rocket",r:"Tech",atk:78,def:54,spd:84,hp:58,en:22,ab:{name:"Raketomet",p:72,cost:26,cd:1},f:{t:"open",sk:"#9a7550",bg:"#241a10",hr:"#3a2c1e",hair:"none",ey:"#2b1c10",muzzle:1}},
+ {n:"Gamora",r:"Agilita",atk:82,def:62,spd:86,hp:64,en:16,ab:{name:"Čepeľ nekonečna",p:70,cost:28,cd:1,crit:.35},f:{t:"open",sk:"#3f9f74",bg:"#123026",hr:"#6b2a5a",hair:"long",ey:"#e8c24a"}},
+ {n:"Drax",r:"Sila",atk:86,def:76,spd:60,hp:84,en:14,ab:{name:"Ničiteľov výpad",p:80,cost:32,cd:2},f:{t:"open",sk:"#8fb9b2",bg:"#16302e",hr:"#8fb9b2",hair:"none",ey:"#1b3330",tattoo:"#c0424a",brow:1}},
+ {n:"Winter Soldier",r:"Agent",atk:76,def:70,spd:74,hp:70,en:16,ab:{name:"Sériová paľba",p:58,cost:24,cd:1},f:{t:"band",sk:"#dcae88",bg:"#1a2028",hr:"#3a2a22",hair:"long",b:"#15131a"}},
+ {n:"Falcon",r:"Agilita",atk:66,def:58,spd:88,hp:58,en:18,ab:{name:"Redwing nálet",p:52,cost:22,cd:1,defDown:20},f:{t:"goggles",sk:"#7a5033",bg:"#2e1512",hr:"#241a14",hair:"short",gl:"#ff6a4a"}},
+ {n:"Wolverine",r:"Sila",atk:86,def:66,spd:72,hp:76,en:14,ab:{name:"Adamantiové pazúry",p:74,cost:30,cd:1,heal:.35},f:{t:"mask",b:"#e8bd22",bg:"#3a2f06",lz:"#fff6d0",cowl:1,stripe:"#2b2b3a"}},
+ {n:"Storm",r:"Mág",atk:88,def:64,spd:78,hp:68,en:16,ab:{name:"Búrkový front",p:76,cost:34,cd:2,dot:26},f:{t:"open",sk:"#8a5c3c",bg:"#182640",hr:"#f0f2f8",hair:"long",ey:"#dff0ff",glowEy:1}},
+ {n:"Deadpool",r:"Chaos",atk:78,def:54,spd:80,hp:72,en:18,ab:{name:"Chaotický masaker",p:62,cost:26,cd:1,chaos:!0,heal:.25},f:{t:"mask",b:"#bc282e",bg:"#2b1013",lz:"#f2f4ff",stripe:"#241f2c",big:1}},
+ {n:"Daredevil",r:"Agilita",atk:68,def:66,spd:84,hp:60,en:16,ab:{name:"Radarový zmysel",p:40,cost:20,cd:1,atkUp:25},f:{t:"mask",b:"#8f1f24",bg:"#2a0c10",lz:"#f0c0c4",horns:1}},
+ {n:"Silver Surfer",r:"Kozmik",atk:90,def:76,spd:92,hp:74,en:14,ab:{name:"Kozmická vlna",p:84,cost:38,cd:2},f:{t:"open",sk:"#c8d2dc",bg:"#1a2436",hr:"#c8d2dc",hair:"none",ey:"#ffffff",glowEy:1}},
+ {n:"She-Hulk",r:"Sila",atk:88,def:78,spd:62,hp:88,en:12,ab:{name:"Smaragdový výpad",p:80,cost:34,cd:2},f:{t:"open",sk:"#66bb6a",bg:"#153a1c",hr:"#1d2f1c",hair:"long",ey:"#1b3a1b"}},
+ {n:"Nebula",r:"Agent",atk:74,def:70,spd:80,hp:64,en:16,ab:{name:"Kybernetický výboj",p:64,cost:26,cd:1},f:{t:"open",sk:"#7fa8d8",bg:"#16283a",hr:"#7fa8d8",hair:"none",ey:"#2b1c30",tattoo:"#b6bec8"}},
+ {n:"Mantis",r:"Mág",atk:58,def:60,spd:78,hp:58,en:22,ab:{name:"Uspávajúci dotyk",p:30,cost:22,cd:2,stun:.55},f:{t:"open",sk:"#8fc98a",bg:"#173021",hr:"#1d1d22",hair:"long",ey:"#1b2b1b",ant:1,plate:"#4fae7a"}},
+ {n:"Cyclops",r:"Tech",atk:84,def:62,spd:72,hp:66,en:16,ab:{name:"Optický lúč",p:78,cost:32,cd:2,pierce:!0},f:{t:"visor",b:"#2f5fbf",bg:"#12224d",gl:"#ff4a4a",plate:"#c8332f"}},
+ {n:"Jean Grey",r:"Mág",atk:92,def:54,spd:76,hp:66,en:16,ab:{name:"Telekinetická vlna",p:80,cost:36,cd:2},f:{t:"open",sk:"#e8bb95",bg:"#3e1a08",hr:"#c0392b",hair:"long",ey:"#ff8a3a",glowEy:1}},
+ {n:"Beast",r:"Sila",atk:76,def:78,spd:76,hp:74,en:14,ab:{name:"Divoký skok",p:66,cost:26,cd:1},f:{t:"open",sk:"#3b6fd8",bg:"#141f3a",hr:"#24468f",hair:"short",ey:"#f0d24a",muzzle:1,brow:1}},
+ {n:"Nightcrawler",r:"Agilita",atk:70,def:56,spd:96,hp:58,en:20,ab:{name:"Teleportačný výpad",p:56,cost:22,cd:0,crit:.3},f:{t:"open",sk:"#4a3a7a",bg:"#160f2c",hr:"#1a1030",hair:"short",ey:"#f0e05a",glowEy:1}},
+ {n:"Rogue",r:"Sila",atk:86,def:72,spd:70,hp:74,en:14,ab:{name:"Odsatie sily",p:66,cost:30,cd:2,heal:.5},f:{t:"open",sk:"#e6b795",bg:"#28203c",hr:"#3a2a22",hair:"long",ey:"#3a6b4a",crest:"#f0f0f5"}},
+ {n:"Magneto",r:"Mág",atk:90,def:80,spd:66,hp:76,en:14,ab:{name:"Magnetická búrka",p:88,cost:40,cd:3},f:{t:"mask",b:"#7b2d8e",bg:"#2a1030",lz:"#f2f4ff",crest:"#c8ccd6",collar:"#a03030"}},
+ {n:"Colossus",r:"Sila",atk:84,def:94,spd:52,hp:90,en:10,ab:{name:"Oceľový nájazd",p:72,cost:30,cd:2,shield:60},f:{t:"open",sk:"#b8bec8",bg:"#1d2430",hr:"#4a4438",hair:"short",ey:"#2b3038",brow:1}},
+ {n:"Yelena Belova",r:"Agent",atk:70,def:62,spd:86,hp:62,en:18,ab:{name:"Tichý zásah",p:58,cost:24,cd:1,crit:.3},f:{t:"open",sk:"#e6c09a",bg:"#1f2a34",hr:"#e0c070",hair:"short",ey:"#4a6b8a"}},
+ {n:"Red Guardian",r:"Taktik",atk:80,def:82,spd:58,hp:84,en:12,ab:{name:"Otcovský nájazd",p:70,cost:30,cd:2,shield:45},f:{t:"mask",b:"#c0272d",bg:"#2b1013",lz:"#f2f4ff",stripe:"#e8e8ee"}},
+ {n:"U.S. Agent",r:"Taktik",atk:78,def:80,spd:68,hp:78,en:14,ab:{name:"Vibrániový štít",p:66,cost:28,cd:1,shield:40},f:{t:"mask",b:"#2b2b3a",bg:"#141826",lz:"#eef3ff",stripe:"#c0272d"}},
+ {n:"Ghost",r:"Agilita",atk:72,def:58,spd:92,hp:58,en:20,ab:{name:"Fázový prienik",p:60,cost:26,cd:1,pierce:!0},f:{t:"mask",b:"#c8ccd4",bg:"#1b2430",lz:"#2ee0ff",big:1}},
+ {n:"Taskmaster",r:"Agent",atk:80,def:74,spd:80,hp:70,en:16,ab:{name:"Kopírovaný útok",p:68,cost:28,cd:1,crit:.25},f:{t:"mask",b:"#e8d9b0",bg:"#2c2416",lz:"#3a3a44",hood:"#e07a2a"}},
+ {n:"Baron Zemo",r:"Taktik",atk:66,def:72,spd:70,hp:70,en:18,ab:{name:"Manipulácia",p:48,cost:24,cd:2,defDown:30},f:{t:"mask",b:"#7b2d8e",bg:"#241030",lz:"#f0e8ff",stripe:"#2b2b3a"}},
+ {n:"Sentry",r:"Kozmik",atk:94,def:80,spd:84,hp:88,en:10,ab:{name:"Zlatá supernova",p:96,cost:48,cd:3},f:{t:"open",sk:"#e8bb92",bg:"#3a2c06",hr:"#e6d49a",hair:"short",ey:"#fff7c0",glowEy:1,collar:"#f0c245"}},
+ {n:"Mister Fantastic",r:"Tech",atk:64,def:74,spd:66,hp:70,en:18,ab:{name:"Elastické zovretie",p:52,cost:24,cd:1,stun:.3},f:{t:"open",sk:"#e0b189",bg:"#16233a",hr:"#2f2a2a",hair:"short",ey:"#3a4a6a",crest:"#d8d8de",collar:"#2a4a86"}},
+ {n:"Invisible Woman",r:"Taktik",atk:66,def:90,spd:70,hp:70,en:18,ab:{name:"Silové pole",p:28,cost:26,cd:2,shield:100},f:{t:"open",sk:"#e8c49f",bg:"#16233a",hr:"#e8d078",hair:"long",ey:"#5a8ad8",glowEy:1,collar:"#2a4a86"}},
+ {n:"Human Torch",r:"Kozmik",atk:88,def:56,spd:88,hp:64,en:16,ab:{name:"Nova plameň",p:82,cost:36,cd:2,dot:30},f:{t:"open",sk:"#e6b795",bg:"#4a1a06",hr:"#ff8a2a",hair:"flame",ey:"#ffd25c",glowEy:1}},
+ {n:"The Thing",r:"Sila",atk:90,def:92,spd:44,hp:96,en:10,ab:{name:"Skalný nápor",p:84,cost:38,cd:2},f:{t:"open",sk:"#d8792a",bg:"#2e1a08",hr:"#d8792a",hair:"none",ey:"#2b6ba8",bark:1,brow:1}},
+ {n:"Doctor Doom",r:"Mág",atk:92,def:88,spd:68,hp:82,en:14,ab:{name:"Doomov výboj",p:90,cost:42,cd:3},f:{t:"mask",b:"#9aa2ac",bg:"#16261c",lz:"#1b1822",hood:"#2a5a3a",collar:"#2a5a3a"}},
+ {n:"Superman",r:"Kozmik",atk:94,def:86,spd:84,hp:88,en:10,ab:{name:"Tepelný pohľad",p:90,cost:46,cd:3},f:{t:"open",sk:"#e8bb92",bg:"#14265e",hr:"#1c1c22",hair:"short",ey:"#ff6a4a",glowEy:1,collar:"#c0272d"}},
+ {n:"Batman",r:"Taktik",atk:76,def:82,spd:76,hp:74,en:16,ab:{name:"Batarang kombo",p:64,cost:26,cd:1,defDown:20},f:{t:"mask",b:"#2b3040",bg:"#0e1018",lz:"#f2f4ff",cowl:1}},
+ {n:"Wonder Woman",r:"Sila",atk:92,def:86,spd:82,hp:84,en:12,ab:{name:"Laso pravdy",p:78,cost:34,cd:2,stun:.4},f:{t:"open",sk:"#e0a878",bg:"#3a1018",hr:"#2a1a18",hair:"long",ey:"#3a5a8a",crest:"#f0c245",collar:"#c0272d"}},
+ {n:"The Flash",r:"Agilita",atk:74,def:58,spd:100,hp:64,en:22,ab:{name:"Rýchlostná smršť",p:60,cost:20,cd:0,crit:.35},f:{t:"mask",b:"#c8272d",bg:"#3a1206",lz:"#f2f4ff",stripe:"#f0c245"}},
+ {n:"Aquaman",r:"Sila",atk:86,def:80,spd:70,hp:86,en:12,ab:{name:"Vlna trojzubca",p:76,cost:32,cd:2},f:{t:"open",sk:"#e0b189",bg:"#0e3040",hr:"#d8c07a",hair:"long",ey:"#3a8ab0",beard:1,collar:"#1f8a6a"}},
+ {n:"Green Lantern",r:"Kozmik",atk:80,def:76,spd:76,hp:72,en:16,ab:{name:"Konštrukt vôle",p:72,cost:30,cd:1,shield:50},f:{t:"band",sk:"#e0b48c",bg:"#0e3020",hr:"#2f2a2a",hair:"short",b:"#1f8a4a",collar:"#1f8a4a"}},
+ {n:"Cyborg",r:"Tech",atk:80,def:84,spd:70,hp:82,en:14,ab:{name:"Sonický kanón",p:78,cost:34,cd:2},f:{t:"visor",b:"#8a8f99",bg:"#161c26",gl:"#ff4a4a",plate:"#2b3040"}},
+ {n:"Martian Manhunter",r:"Mág",atk:88,def:82,spd:78,hp:80,en:14,ab:{name:"Psychická vlna",p:80,cost:36,cd:2,stun:.3},f:{t:"open",sk:"#3aa06a",bg:"#16301f",hr:"#3aa06a",hair:"none",ey:"#ff5a4a",glowEy:1,brow:1,collar:"#1a2a5a"}},
+ {n:"Robin",r:"Agilita",atk:68,def:66,spd:82,hp:62,en:18,ab:{name:"Bo-palica",p:54,cost:22,cd:1},f:{t:"band",sk:"#e0b48c",bg:"#1a2c16",hr:"#1c1c22",hair:"short",b:"#1b1822",collar:"#1f8a4a"}},
+ {n:"Nightwing",r:"Agilita",atk:76,def:72,spd:88,hp:68,en:16,ab:{name:"Eskrima výpad",p:62,cost:24,cd:1,crit:.25},f:{t:"band",sk:"#e0b48c",bg:"#101a30",hr:"#1c1c22",hair:"long",b:"#1b3a8a",collar:"#1b3a8a"}},
+ {n:"Starfire",r:"Kozmik",atk:86,def:64,spd:88,hp:70,en:16,ab:{name:"Hviezdny výboj",p:76,cost:32,cd:2},f:{t:"open",sk:"#e8a04a",bg:"#3a1a2a",hr:"#c0392b",hair:"long",ey:"#3fdf8f",glowEy:1}},
+ {n:"Raven",r:"Mág",atk:90,def:62,spd:72,hp:64,en:18,ab:{name:"Tieňový závoj",p:78,cost:34,cd:2,dot:28},f:{t:"open",sk:"#cfc6d8",bg:"#1c1030",hr:"#3a2a5a",hair:"none",ey:"#e8dff8",glowEy:1,hood:"#4a2a7a",collar:"#4a2a7a"}},
+ {n:"Beast Boy",r:"Agilita",atk:72,def:62,spd:84,hp:66,en:18,ab:{name:"Šelmí skok",p:62,cost:24,cd:1},f:{t:"open",sk:"#5ac06a",bg:"#16301c",hr:"#2f8a4a",hair:"short",ey:"#2b4a2b"}},
+ {n:"Kid Flash",r:"Agilita",atk:70,def:56,spd:96,hp:60,en:22,ab:{name:"Blesková séria",p:54,cost:18,cd:0},f:{t:"mask",b:"#f0c245",bg:"#3a2a06",lz:"#f2f4ff",stripe:"#c8272d"}},
+ {n:"Punisher",r:"Agent",atk:84,def:70,spd:66,hp:76,en:14,ab:{name:"Ťažká paľba",p:74,cost:30,cd:1},f:{t:"open",sk:"#dcae88",bg:"#16181c",hr:"#2a2a30",hair:"short",ey:"#3a3a44",brow:1,collar:"#1b1822"}},
+ {n:"Elektra",r:"Agilita",atk:80,def:62,spd:90,hp:62,en:18,ab:{name:"Sai bodnutie",p:66,cost:26,cd:1,crit:.35},f:{t:"band",sk:"#e0a878",bg:"#3a1014",hr:"#1c1c22",hair:"long",b:"#c0272d",collar:"#c0272d"}},
+ {n:"Luke Cage",r:"Sila",atk:80,def:94,spd:58,hp:92,en:10,ab:{name:"Nezničiteľný nápor",p:70,cost:30,cd:2,shield:55},f:{t:"open",sk:"#6b4a35",bg:"#26201a",hr:"#1c1c1c",hair:"none",ey:"#2b1c12",brow:1,collar:"#f0c245"}},
+ {n:"Moon Knight",r:"Taktik",atk:82,def:70,spd:80,hp:70,en:16,ab:{name:"Polmesiacové čepele",p:70,cost:28,cd:1,crit:.3},f:{t:"mask",b:"#eef0f5",bg:"#1a1c24",lz:"#c8ccd6",hood:"#f4f6fa"}},
+ {n:"Nick Fury",r:"Taktik",atk:60,def:74,spd:68,hp:70,en:20,ab:{name:"Taktický rozkaz",p:26,cost:22,cd:2,heal:.9,atkUp:20},f:{t:"open",sk:"#6b4a35",bg:"#161a20",hr:"#1c1c1c",hair:"none",ey:"#2b1c12",patch:1,beard:1}}
+].map((h,i)=>({...h,id:i,pow:Math.round((h.atk*1.1+h.def+h.spd*.9+h.hp)/4)}));
+
+
+const GROUPS=[
+ ["AVENGERS",["Iron Man","Captain America","Thor","Hulk","Black Widow","Hawkeye","Spider-Man","Doctor Strange","Black Panther","Scarlet Witch","Vision","Ant-Man","Wasp","Captain Marvel","Falcon","Winter Soldier","She-Hulk","Nick Fury"]],
+ ["THUNDERBOLTS",["Yelena Belova","Red Guardian","U.S. Agent","Ghost","Taskmaster","Baron Zemo","Sentry"]],
+ ["X-MEN",["Wolverine","Storm","Cyclops","Jean Grey","Beast","Nightcrawler","Rogue","Magneto","Colossus","Deadpool"]],
+ ["FANTASTIC FOUR",["Mister Fantastic","Invisible Woman","Human Torch","The Thing","Doctor Doom","Silver Surfer"]],
+ ["JUSTICE LEAGUE",["Superman","Batman","Wonder Woman","The Flash","Aquaman","Green Lantern","Cyborg","Martian Manhunter"]],
+ ["TEEN TITANS",["Robin","Nightwing","Starfire","Raven","Beast Boy","Kid Flash"]],
+ ["STRÁŽCOVIA",["Star-Lord","Gamora","Drax","Rocket","Groot","Nebula","Mantis"]],
+ ["OBRANCOVIA",["Daredevil","Punisher","Elektra","Luke Cage","Moon Knight"]]
+];
+GROUPS.forEach(([g,list])=>list.forEach(n=>{const h=HEROES.find(x=>x.n===n);if(h)h.g=g;}));
+HEROES.forEach(h=>{if(!h.g)h.g="OSTATNÍ";});
+const GNAMES=GROUPS.map(g=>g[0]);
+
+const TITLES={Sila:"KOLOS",Tech:"PROTOKOL",Mág:"URIEKNUTIE",Agent:"PRÍZRAK",Agilita:"STRELA",Kozmik:"SUPERNOVA",Taktik:"DOKTRÍNA",Chaos:"ANOMÁLIA"};
+const T=[{name:"TÍM 1",c:"#ff2f57"},{name:"TÍM 2",c:"#2ee0ff"}];
+
+/* ======================= PORTRÉTY (kreslené SVG) ======================= */
+function face(id){
+ const h=HEROES[id],f=h.f;
+ if(S.custom&&S.custom[id])
+  return `<img src="${S.custom[id]}" alt="${h.n}" style="display:block;width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">`;
+ const head=(f.t==="open"||f.t==="band"||f.t==="goggles")?f.sk:f.b;
+ const ink="#0b0912";
+ const HEAD="M32 11 C43 11 48.5 19 48.5 28.5 C48.5 40 40.5 51 32 51 C23.5 51 15.5 40 15.5 28.5 C15.5 19 21 11 32 11Z";
+ let s2=`<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="display:block;width:100%;height:auto"><title>${h.n}</title>`;
+ s2+=`<rect width="64" height="64" fill="${f.bg}"/>`;
+ s2+=`<path d="M0 0 L34 0 L0 48Z" fill="rgba(255,255,255,.055)"/>`;
+ s2+=`<circle cx="32" cy="30" r="21" fill="rgba(255,255,255,.05)"/>`;
+ s2+=`<path d="M-2 64 Q32 40 66 64Z" fill="${f.collar||f.b||f.sk}"/><path d="M32 46 Q50 50 66 64 L32 64Z" fill="rgba(0,0,0,.22)"/>`;
+ s2+=`<path d="${HEAD}" fill="${head}"/>`;
+ s2+=`<path d="M40 13 C46.5 17 48.5 22 48.5 28.5 C48.5 40 40.5 51 32 51 C36 45 40 38 41 28 C41.6 22 41 17 40 13Z" fill="rgba(0,0,0,.2)"/>`;
+ s2+=`<path d="M32 11.6 C24 11.6 18.5 17 16.6 25" stroke="rgba(255,255,255,.22)" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+ if(f.bark) s2+=`<path d="M24 18 L26 46 M38 20 L36 44 M31 14 L31 48" stroke="rgba(0,0,0,.26)" stroke-width="1.6" fill="none"/>`;
+ if(f.muzzle){s2+=`<circle cx="17" cy="16" r="6" fill="${f.sk}" stroke="${ink}" stroke-width="1"/><circle cx="47" cy="16" r="6" fill="${f.sk}" stroke="${ink}" stroke-width="1"/>`;
+  s2+=`<circle cx="17" cy="16" r="3" fill="rgba(0,0,0,.38)"/><circle cx="47" cy="16" r="3" fill="rgba(0,0,0,.38)"/>`;
+  s2+=`<ellipse cx="32" cy="40" rx="10" ry="7" fill="#d8c0a0"/><ellipse cx="32" cy="35.5" rx="2.6" ry="2" fill="#241a14"/><path d="M32 37.5 L32 41 M28 43 Q32 40.5 36 43" stroke="rgba(0,0,0,.4)" stroke-width="1" fill="none"/>`;}
+ if(f.cowl) s2+=`<path d="M17 18 L11.5 4 L25 12Z" fill="${f.b}" stroke="${ink}" stroke-width="1"/><path d="M47 18 L52.5 4 L39 12Z" fill="${f.b}" stroke="${ink}" stroke-width="1"/>`;
+ if(f.horns) s2+=`<path d="M23 13 L19.5 3.5 L28 10Z" fill="${f.b}" stroke="${ink}" stroke-width=".9"/><path d="M41 13 L44.5 3.5 L36 10Z" fill="${f.b}" stroke="${ink}" stroke-width=".9"/>`;
+ if(f.hood) s2+=`<path d="M32 4 C47 4 53.5 17 52.5 36 L47.6 32.5 C48.6 20 42.5 12.6 32 12.6 C21.5 12.6 15.4 20 16.4 32.5 L11.5 36 C10.5 17 17 4 32 4Z" fill="${f.hood}" stroke="${ink}" stroke-width="1"/>`;
+ if(f.hair==="flame"){
+  s2+=`<path d="M16 27 C15 15 21 9 26 4 C26 9 28 11 30 12 C31 6 34 2 39 0 C38 7 41 10 44 13 C47.5 17 49 22 48 27 C45 20 40 17 32 17 C24 17 19 20 16 27Z" fill="${f.hr}"/>`;
+  s2+=`<path d="M22 22 C24 15 28 12 31 10 C30 15 32 18 34 20 C31 19 25 20 22 22Z" fill="rgba(255,255,255,.35)"/>`;
+ }
+ if(f.hair==="short"||f.hair==="long"){
+  s2+=`<path d="M15.5 28 C15 16 22 9.5 32 9.5 C42 9.5 49 16 48.5 28 C46 21 41 18 32 18 C23 18 18 21 15.5 28Z" fill="${f.hr}" stroke="${ink}" stroke-width=".8"/>`;
+  s2+=`<path d="M22 15 C26 12 30 11 34 11.4 M27 12.6 C31 11.6 36 12 39 14" stroke="rgba(255,255,255,.16)" stroke-width="1.1" fill="none"/>`;
+ }
+ if(f.hair==="long") s2+=`<path d="M15.8 24 L12.6 51 L19 46.5 L18 30Z" fill="${f.hr}" stroke="${ink}" stroke-width=".7"/><path d="M48.2 24 L51.4 51 L45 46.5 L46 30Z" fill="${f.hr}" stroke="${ink}" stroke-width=".7"/>`;
+ if(f.hood&&f.t!=="mask") s2+=`<path d="M17 19 Q32 13 47 19 L46 27 Q32 22 18 27Z" fill="rgba(0,0,0,.45)"/>`;
+ if(f.hair==="leaf") s2+=`<path d="M16 26 C18 12 26 8 32 8 C38 8 46 12 48 26 C44 18 38 15 32 15 C26 15 20 18 16 26Z" fill="${f.hr}" stroke="${ink}" stroke-width=".8"/><path d="M32 8 L28 1 L36 2Z" fill="${f.hr}"/>`;
+ if(f.crest) s2+=`<path d="M32 8 L36.5 20.5 L32 17.5 L27.5 20.5Z" fill="${f.crest}" stroke="${ink}" stroke-width=".7"/>`;
+ if(f.stripe&&f.t==="mask") s2+=`<path d="M15.9 24 C22 20 42 20 48.1 24 L48.4 29 C41 25 23 25 15.6 29Z" fill="${f.stripe}" opacity=".85"/>`;
+ if(f.gem) s2+=`<path d="M32 12.5 l5 5 -5 5 -5 -5Z" fill="${f.gem}" stroke="${ink}" stroke-width=".8"/><path d="M32 12.5 l5 5 -5 5Z" fill="rgba(0,0,0,.18)"/>`;
+ if(f.ant) s2+=`<path d="M24 12 C20 4 16 3 13 5" stroke="${f.plate}" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M40 12 C44 4 48 3 51 5" stroke="${f.plate}" stroke-width="1.8" fill="none" stroke-linecap="round"/>`;
+ if(f.t==="mask"){
+  const w=f.big?11:9,y=f.big?25:26;
+  const lens=(sx)=>`<path d="M${32+sx*(w+3)} ${y} L${32+sx*3} ${y-2.4} L${32+sx*4} ${y+8} L${32+sx*(w+2)} ${y+6.6}Z" fill="${f.lz}" stroke="${ink}" stroke-width="1.1" stroke-linejoin="round"/>`+
+   `<path d="M${32+sx*(w+1.6)} ${y+1.4} L${32+sx*5.5} ${y-.6} L${32+sx*6} ${y+2.2} L${32+sx*(w+1)} ${y+3.6}Z" fill="rgba(255,255,255,.55)"/>`;
+  s2+=lens(-1)+lens(1);
+  s2+=`<path d="M27 42.5 Q32 45 37 42.5" stroke="rgba(0,0,0,.4)" stroke-width="1.4" fill="none" stroke-linecap="round"/>`;
+ } else if(f.t==="visor"){
+  s2+=`<path d="M16.5 22 L47.5 22 L46 34.5 L18 34.5Z" fill="${f.plate}" stroke="${ink}" stroke-width="1"/>`;
+  s2+=`<rect x="19.5" y="25.6" width="25" height="4.8" rx="2.4" fill="${f.gl}"/>`;
+  s2+=`<rect x="19.5" y="25.6" width="25" height="1.8" rx="1" fill="rgba(255,255,255,.5)"/>`;
+  s2+=`<path d="M22 38.5 L42 38.5 L39 46.5 L25 46.5Z" fill="${f.plate}" opacity=".6" stroke="${ink}" stroke-width=".7"/>`;
+  s2+=`<path d="M32 38.5 L32 46.5" stroke="rgba(0,0,0,.3)" stroke-width=".9"/>`;
+ } else if(f.t==="band"||f.t==="goggles"){
+  s2+=`<path d="M15 24 L49 24 L48 32.5 L16 32.5Z" fill="${f.b||'#1b1822'}" stroke="${ink}" stroke-width=".8"/>`;
+  if(f.t==="goggles"){s2+=`<circle cx="25" cy="28.3" r="4.6" fill="#12101a" stroke="${ink}" stroke-width=".8"/><circle cx="39" cy="28.3" r="4.6" fill="#12101a" stroke="${ink}" stroke-width=".8"/><circle cx="25" cy="28.3" r="3" fill="${f.gl}"/><circle cx="39" cy="28.3" r="3" fill="${f.gl}"/><circle cx="24" cy="27.2" r="1" fill="rgba(255,255,255,.7)"/><circle cx="38" cy="27.2" r="1" fill="rgba(255,255,255,.7)"/>`;}
+  else {s2+=`<ellipse cx="25" cy="28.4" rx="3.1" ry="2" fill="#f2f4ff"/><ellipse cx="39" cy="28.4" rx="3.1" ry="2" fill="#f2f4ff"/>`;}
+  s2+=`<path d="M27 42.5 Q32 45 37 42.5" stroke="rgba(0,0,0,.4)" stroke-width="1.4" fill="none" stroke-linecap="round"/>`;
+ } else {
+  if(f.brow) s2+=`<path d="M20 25 L29 27.5 M44 25 L35 27.5" stroke="rgba(0,0,0,.5)" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+  else s2+=`<path d="M21 26 Q25 24 29 25.6 M43 26 Q39 24 35 25.6" stroke="rgba(0,0,0,.35)" stroke-width="1.5" fill="none" stroke-linecap="round"/>`;
+  if(f.tattoo) s2+=`<path d="M22 20 C24 26 24 32 22 38 M42 20 C40 26 40 32 42 38" stroke="${f.tattoo}" stroke-width="1.6" fill="none" opacity=".8"/>`;
+  if(f.glowEy) s2+=`<circle cx="25" cy="29.8" r="5.4" fill="${f.ey}" opacity=".3"/><circle cx="39" cy="29.8" r="5.4" fill="${f.ey}" opacity=".3"/>`;
+  s2+=`<ellipse cx="25" cy="29.8" rx="3.5" ry="2.4" fill="#f6f4fa"/><ellipse cx="39" cy="29.8" rx="3.5" ry="2.4" fill="#f6f4fa"/>`;
+  s2+=`<circle cx="25.4" cy="29.9" r="1.7" fill="${f.ey}"/><circle cx="38.6" cy="29.9" r="1.7" fill="${f.ey}"/>`;
+  s2+=`<circle cx="24.7" cy="29.2" r=".6" fill="#fff"/><circle cx="37.9" cy="29.2" r=".6" fill="#fff"/>`;
+  s2+=`<path d="M31 31 L30 36.5 L33 37" stroke="rgba(0,0,0,.22)" stroke-width="1.1" fill="none" stroke-linecap="round"/>`;
+  if(f.beard) s2+=`<path d="M20 33 C22 46 27 51.5 32 51.5 C37 51.5 42 46 44 33 C41.5 42 37 44.5 32 44.5 C27 44.5 22.5 42 20 33Z" fill="${f.hr}" opacity=".94"/>`;
+  else s2+=`<path d="M27 42 Q32 44.5 37 42" stroke="rgba(0,0,0,.38)" stroke-width="1.4" fill="none" stroke-linecap="round"/>`;
+  if(f.patch) s2+=`<path d="M18.5 24.6 L31.5 23 L31.5 34 L19.5 34.4Z" fill="#14121a"/><path d="M17.6 21.6 L47 30" stroke="#14121a" stroke-width="1.9"/>`;
+ }
+ s2+=`<path d="${HEAD}" fill="none" stroke="${ink}" stroke-width="1.5"/>`;
+ return s2+`</svg>`;
+}
+function faceBox(id,cls){return `<span class="${cls||'fbox'}" title="${HEROES[id].n}">${face(id)}</span>`;}
+
+/* ======================= FÚZIA + BOJ ======================= */
+const rnd=(a,b)=>a+Math.random()*(b-a), clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+function fuse(ids,team){
+ const hs=ids.map(i=>HEROES[i]), avg=k=>hs.reduce((s,h)=>s+h[k],0)/hs.length;
+ const roles=[...new Set(hs.map(h=>h.r))], gs=[...new Set(hs.map(h=>h.g))];
+ let syn=1+Math.max(0,roles.length-3)*.03; if(gs.length===1)syn+=.08;
+ const top=[...hs].sort((a,b)=>b.pow-a.pow);
+ const code=top.slice(0,3).map(h=>h.n.replace(/[^A-Za-z]/g,"").slice(0,3).toUpperCase()).join("");
+ const c={};hs.forEach(h=>c[h.r]=(c[h.r]||0)+1);
+ const main=Object.keys(c).sort((a,b)=>c[b]-c[a])[0];
+ const maxHp=Math.round(avg("hp")*30*syn);
+ return {team,code,title:gs.length===1?gs[0]:(TITLES[main]||"FÚZIA"),pure:gs.length===1?gs[0]:null,parts:hs,top:top.slice(0,3),roles,
+  atk:Math.round(avg("atk")*syn),def:Math.round(avg("def")*syn),spd:Math.round(avg("spd")),
+  regen:Math.round(avg("en")+6),maxHp,hp:maxHp,en:55,charge:0,shield:0,dot:[],stun:0,atkUp:0,defDown:0,cds:hs.map(()=>0)};
+}
+function damage(src,tgt,ab){
+ let p=ab.p; if(ab.chaos) p=Math.round(p*rnd(.55,1.9));
+ const atk=src.atk*(1+src.atkUp/100);
+ const def=ab.pierce?tgt.def*.35:tgt.def*(1-tgt.defDown/100);
+ let raw=p*(atk/70)*7*rnd(.92,1.1)*(100/(100+def*.75));
+ let crit=false;
+ if(Math.random()<(ab.crit||0)+src.spd/900){crit=true;raw*=1.65;}
+ return {dmg:Math.max(1,Math.round(raw)),crit};
+}
+
+/* ======================= STAV ======================= */
+const S={view:"draft",phase:"draft",picks:[[],[]],turn:0,F:null,active:0,log:[],winner:null,ai:[false,true],speed:420,turns:0,sim:null,busy:false,shake:null,hist:[],curId:null,custom:{},edit:false,filter:null};
+const app=document.getElementById("app");
+const taken=()=>new Set([...S.picks[0],...S.picks[1]]);
+const full=()=>S.picks[0].length===7&&S.picks[1].length===7;
+
+/* ---- história ---- */
+async function loadHist(){
+ try{const r=await window.storage.get("fusion:history");S.hist=r?JSON.parse(r.value):[];}
+ catch(e){S.hist=[];}
+ render();
+}
+async function loadCustom(){
+ try{const r=await window.storage.get("fusion:avatars");S.custom=r?JSON.parse(r.value):{};}catch(e){S.custom={};}
+ render();
+}
+async function saveCustom(){try{await window.storage.set("fusion:avatars",JSON.stringify(S.custom));}catch(e){}}
+function setAvatar(id,url){
+ url=(url||"").trim();
+ if(url)S.custom[id]=url;else delete S.custom[id];
+ saveCustom();render();
+}
+function toggleEdit(){S.edit=!S.edit;render();}
+function clearAvatars(){S.custom={};saveCustom();render();}
+async function saveHist(){try{await window.storage.set("fusion:history",JSON.stringify(S.hist.slice(0,25)));}catch(e){}}
+function recordTeams(){
+ S.curId=Date.now();
+ S.hist.unshift({id:S.curId,ts:S.curId,a:S.picks[0].slice(),b:S.picks[1].slice(),ca:S.F[0].code,cb:S.F[1].code,w:null});
+ saveHist();
+}
+function recordWinner(w){
+ const e=S.hist.find(x=>x.id===S.curId); if(e){e.w=w;saveHist();}
+}
+function delHist(id){S.hist=S.hist.filter(x=>x.id!==id);saveHist();render();}
+function loadTeams(id){
+ const e=S.hist.find(x=>x.id===id); if(!e)return;
+ S.picks=[e.a.slice(),e.b.slice()];S.view="draft";S.F=[fuse(e.a,0),fuse(e.b,1)];S.phase="fusion";render();
+}
+
+/* ---- draft ---- */
+function pick(id){
+ if(taken().has(id)||full())return;
+ S.picks[S.turn].push(id);
+ if(S.picks[1-S.turn].length<7)S.turn=1-S.turn;
+ render();
+}
+function randomFill(){
+ const pool=HEROES.map(h=>h.id).filter(i=>!taken().has(i)).sort(()=>Math.random()-.5);
+ let t=S.turn;
+ while(S.picks[0].length<7||S.picks[1].length<7){
+  if(S.picks[t].length>=7)t=1-t;
+  S.picks[t].push(pool.pop());t=1-t;
+ }
+ render();
+}
+function setFilter(g){S.filter=g;render();window.scrollTo({top:0,behavior:"smooth"});}
+function fillGroup(){
+ if(!S.filter||full())return;
+ const t=S.turn, tk=taken();
+ const pool=HEROES.filter(h=>h.g===S.filter&&!tk.has(h.id)).sort(()=>Math.random()-.5);
+ while(S.picks[t].length<7&&pool.length)S.picks[t].push(pool.pop().id);
+ if(S.picks[1-t].length<7)S.turn=1-t;
+ render();
+}
+function clearDraft(){S.picks=[[],[]];S.turn=0;S.F=null;S.log=[];S.winner=null;S.sim=null;S.phase="draft";S.view="draft";S.filter=null;render();}
+function startFusion(){S.F=[fuse(S.picks[0],0),fuse(S.picks[1],1)];S.phase="fusion";recordTeams();render();}
+function startBattle(){
+ const first=S.F[0].spd>=S.F[1].spd?0:1;
+ S.active=first;S.turns=0;S.log=[{t:-1,m:T[first].name+" je rýchlejší a začína."}];
+ S.phase="battle";S.view="draft";S.winner=null;render();aiTick();
+}
+function startManual(){S.ai=[false,true];S.sim=null;startBattle();}
+function rematch(){
+ S.F=[fuse(S.picks[0],0),fuse(S.picks[1],1)];recordTeams();startBattle();
+}
+function backToFusion(){S.F=[fuse(S.picks[0],0),fuse(S.picks[1],1)];S.phase="fusion";S.winner=null;S.log=[];render();}
+
+/* ---- boj: jadro (spolocne pre hru aj simulaciu) ---- */
+function push(m,t){S.log.push({m,t});if(S.log.length>60)S.log.shift();}
+
+function resolve(me,foe,idx){
+ const ult=idx===-1,hero=ult?null:me.parts[idx];
+ const ab=ult?{name:"FÚZNY PRIELOM",p:Math.round(me.parts.reduce((s,h)=>s+h.ab.p,0)/3),cost:0,pierce:true}:hero.ab;
+ if(ult){me.charge=0;me.shield=0;me.dot=[];me.defDown=0;}
+ else{me.en-=ab.cost;me.cds[idx]=ab.cd+1;me.charge=clamp(me.charge+14,0,100);}
+ let line=(ult?"☄️ ":"")+ab.name,hit=false;
+ if(ab.p>0){
+  const R=damage(me,foe,ab);let d=R.dmg;hit=true;
+  if(foe.shield>0){const abs=Math.min(foe.shield,d);foe.shield-=abs;d-=abs;line+=" · štít pohltil "+abs;}
+  foe.hp=Math.max(0,foe.hp-d);foe.charge=clamp(foe.charge+(d/foe.maxHp)*55,0,100);
+  line+=" · "+d+" dmg"+(R.crit?" · KRIT!":"");
+  if(ab.heal){const hl=Math.round(R.dmg*ab.heal);me.hp=Math.min(me.maxHp,me.hp+hl);line+=" · +"+hl+" hp";}
+ } else if(ab.heal){
+  const hl=Math.round(me.maxHp*.42*ab.heal);me.hp=Math.min(me.maxHp,me.hp+hl);line+=" · +"+hl+" hp";
+ }
+ if(ab.shield){const sh=Math.round(ab.shield*(me.def/70)*4);me.shield+=sh;line+=" · štít +"+sh;}
+ if(ab.dot){foe.dot.push({d:Math.round(ab.dot*(me.atk/70)*3.4),turns:3});line+=" · rana horí (3 kolá)";}
+ if(ab.stun&&Math.random()<ab.stun){foe.stun=1;line+=" · SÚPER OMRÁČENÝ";}
+ if(ab.defDown){foe.defDown=Math.min(45,foe.defDown+ab.defDown);line+=" · obrana súpera dole";}
+ if(ab.atkUp){me.atkUp=Math.min(60,me.atkUp+ab.atkUp);line+=" · útok hore";}
+ if(ult)line+=" · vymazané efekty";
+ return {line,hit};
+}
+
+function upkeep(nf){
+ nf.en=Math.min(100,nf.en+nf.regen);
+ nf.cds=nf.cds.map(c=>Math.max(0,c-1));
+ nf.atkUp=Math.max(0,nf.atkUp-10);nf.defDown=Math.max(0,nf.defDown-10);
+ let burn=0;
+ if(nf.dot.length){nf.dot=nf.dot.filter(d=>{burn+=d.d;d.turns--;return d.turns>0;});nf.hp=Math.max(0,nf.hp-burn);}
+ const st=nf.stun>0; if(st)nf.stun=0;
+ return {burn,dead:nf.hp<=0,stunned:st};
+}
+
+function chooseAI(me,foe){
+ if(me.charge>=100)return -1;
+ const low=me.hp/me.maxHp<.35;
+ const score=ab=>{let s=ab.p+(ab.dot||0)*1.5+(ab.shield||0)*.6;if(ab.heal)s+=low?90:10;if(ab.stun)s+=25;if(foe.hp/foe.maxHp<.25)s=ab.p*1.6;return s;};
+ const opts=me.parts.map((h,i)=>({i,ab:h.ab})).filter(o=>me.cds[o.i]===0&&me.en>=o.ab.cost);
+ if(!opts.length){
+  const ready=me.parts.map((h,i)=>i).filter(i=>me.cds[i]===0);
+  return (ready.length?ready:me.parts.map((h,i)=>i)).sort((a,b)=>me.parts[a].ab.cost-me.parts[b].ab.cost)[0];
+ }
+ opts.sort((a,b)=>score(b.ab)-score(a.ab));
+ return opts[0].i;
+}
+
+/* ---- hrany hry ---- */
+function act(idx){
+ if(S.busy||S.winner!=null)return;
+ S.busy=true;
+ const me=S.F[S.active],foe=S.F[1-S.active];
+ const R=resolve(me,foe,idx);
+ if(R.hit){S.shake=1-S.active;setTimeout(()=>{S.shake=null;},Math.min(330,S.speed));}
+ push(R.line,S.active);S.turns++;render();
+ setTimeout(()=>{
+  if(foe.hp<=0)return finish(S.active);
+  endTurn();
+ },S.speed);
+}
+function endTurn(){
+ const next=1-S.active,nf=S.F[next],u=upkeep(nf);
+ if(u.burn>0)push("🔥 "+T[next].name+" stráca "+u.burn+" hp z horiacej rany.",next);
+ if(u.dead)return finish(S.active);
+ if(u.stunned){push("💫 "+T[next].name+" je omráčený a vynecháva ťah.",next);S.busy=false;render();aiTick();return;}
+ S.active=next;S.busy=false;render();aiTick();
+}
+function finish(w){
+ S.winner=w;push(T[w].name+" vyhráva po "+S.turns+" ťahoch.",w);recordWinner(w);S.busy=false;render();
+}
+function aiTick(){
+ if(S.phase!=="battle"||S.winner!=null||!S.ai[S.active])return;
+ setTimeout(()=>{
+  if(S.phase!=="battle"||S.winner!=null||!S.ai[S.active]||S.busy)return;
+  act(chooseAI(S.F[S.active],S.F[1-S.active]));
+ },Math.max(60,S.speed));
+}
+function setAI(t,v){S.ai[t]=v;render();aiTick();}
+function setSpeed(v){S.speed=+v;render();}
+function simulateRest(){S.ai=[true,true];render();aiTick();}
+function setView(v){S.view=v;render();}
+
+/* ---- davkova simulacia (bez animacie) ---- */
+function simulateOne(p0,p1){
+ const F=[fuse(p0,0),fuse(p1,1)];
+ let active=F[0].spd>=F[1].spd?0:1;
+ for(let t=1;t<=400;t++){
+  const me=F[active],foe=F[1-active];
+  resolve(me,foe,chooseAI(me,foe));
+  if(foe.hp<=0)return {w:active,turns:t,hp:Math.round(me.hp/me.maxHp*100)};
+  const next=1-active,u=upkeep(F[next]);
+  if(u.dead)return {w:active,turns:t,hp:Math.round(me.hp/me.maxHp*100)};
+  if(!u.stunned)active=next;
+ }
+ return {w:-1,turns:400,hp:0};
+}
+function runBatch(n){
+ const wins=[0,0];let draws=0,turns=0,hp=[0,0];
+ for(let i=0;i<n;i++){
+  const r=simulateOne(S.picks[0],S.picks[1]);
+  turns+=r.turns;
+  if(r.w<0)draws++;else{wins[r.w]++;hp[r.w]+=r.hp;}
+ }
+ const prev=S.sim&&S.sim.n?S.sim:null;
+ S.sim={n:n+(prev?prev.n:0),
+  wins:[wins[0]+(prev?prev.wins[0]:0),wins[1]+(prev?prev.wins[1]:0)],
+  draws:draws+(prev?prev.draws:0),
+  turns:Math.round((turns+(prev?prev.turns*prev.n:0))/(n+(prev?prev.n:0))),
+  hp:[wins[0]?Math.round(hp[0]/wins[0]):0,wins[1]?Math.round(hp[1]/wins[1]):0]};
+ S.phase="sim";S.view="draft";
+ const e=S.hist.find(x=>x.id===S.curId);
+ if(e){e.sim=S.sim.wins[0]+"–"+S.sim.wins[1]+" z "+S.sim.n;saveHist();}
+ render();
+}
+function startSim(){S.ai=[true,true];S.sim=null;startBattle();}
+
+/* ======================= RENDER ======================= */
+function render(){
+ if(S.view==="hist"){app.innerHTML=tabs()+histView();return;}
+ if(S.phase==="draft")app.innerHTML=tabs()+draftView();
+ else if(S.phase==="sim")app.innerHTML=simView();
+ else if(S.phase==="fusion")app.innerHTML=fusionView();
+ else app.innerHTML=battleView();
+ const lg=document.getElementById("log");if(lg)lg.scrollTop=lg.scrollHeight;
+}
+function tabs(){
+ return `<div class="tabs">
+  <button class="tab ${S.view==="draft"?"on":""}" onclick="setView('draft')">Draft</button>
+  <button class="tab ${S.view==="hist"?"on":""}" onclick="setView('hist')">História (${S.hist.length})</button></div>`;
+}
+function draftView(){
+ let h=`<div class="bar">`;
+ for(let t=0;t<2;t++){
+  h+=`<div class="slot ${S.turn===t&&!full()?"on":""}" style="--c:${T[t].c}"><div class="slotName">${T[t].name}</div><div class="chips">`;
+  for(let i=0;i<7;i++){const id=S.picks[t][i];h+=`<span class="chip ${id!=null?"f":""}" style="--c:${T[t].c}" title="${id!=null?HEROES[id].n:""}">${id!=null?face(id):""}</span>`;}
+  h+=`</div></div>`;
+ }
+ h+=`</div>
+ <div class="filters"><button class="fch ${S.filter?"":"on"}" onclick="setFilter(null)">Všetci (${HEROES.length})</button>`+
+  GNAMES.map(g=>`<button class="fch ${S.filter===g?"on":""}" onclick="setFilter('${g}')">${g} (${HEROES.filter(x=>x.g===g).length})</button>`).join("")+
+  (S.filter&&!full()?`<button class="fch team" onclick="fillGroup()">＋ Zložiť ${S.filter} pre ${T[S.turn].name}</button>`:"")+
+ `</div><p class="hint">${S.edit?"Vlož URL obrázka ku ktorémukoľvek hrdinovi — uloží sa a nahradí kreslený portrét. Prázdne pole ho vráti späť.":full()?"Zostavy sú plné. Spusti fúziu.":"Ťuk na hrdinu — vyberá "+T[S.turn].name+"."}</p><div class="grid">`;
+  HEROES.filter(x=>!S.filter||x.g===S.filter).forEach(x=>{
+  const t0=S.picks[0].includes(x.id),t1=S.picks[1].includes(x.id);
+  const c=t0?T[0].c:t1?T[1].c:"#3a3648";
+  h+=`<div class="cardWrap ${t0||t1?"used":""}" style="--c:${c}" onclick="pick(${x.id})">
+   <button class="card" aria-label="${x.n}"><span class="art">${face(x.id)}</span></button>
+   <div class="lbl"><span class="nm">${x.n}</span><span class="rl">${x.r} · ${x.pow}</span><span class="gp">${x.g}</span></div>`;
+  if(S.edit)h+=`<input class="avIn" placeholder="URL obrázka" value="${S.custom[x.id]||""}" onchange="setAvatar(${x.id},this.value)">`;
+  h+=`</div>`;
+ });
+ h+=`</div><div class="actions">
+  <button class="btn" onclick="randomFill()" ${full()?"disabled":""}>Náhodne doplniť</button>
+  <button class="btn" onclick="clearDraft()">Vyčistiť</button>
+  <button class="btn ${S.edit?"on":""}" onclick="toggleEdit()">${S.edit?"Hotovo":"Vlastné obrázky"}</button>
+  <button class="btn main" onclick="startFusion()" ${full()?"":"disabled"}>Spustiť fúziu</button></div>`;
+ return h;
+}
+function fusionView(){
+ let h=`<div class="reveal">`;
+ S.F.forEach(f=>{
+  h+=`<div class="fusePanel" style="--c:${T[f.team].c}"><div class="stack">`;
+  f.top.forEach(p=>h+=`<span class="p">${face(p.id)}<i>${p.n}</i></span>`);
+  h+=`</div><div class="code">${f.code}</div><div class="title">${f.title}</div>
+   <div class="mini">${f.parts.map(p=>`<span title="${p.n}">${face(p.id)}</span>`).join("")}</div>
+   <div class="names">${f.parts.map(p=>p.n).join(" · ")}</div>
+   <div class="stats"><b>ÚT</b>${f.atk}<b>OBR</b>${f.def}<b>RÝCH</b>${f.spd}<b>HP</b>${f.maxHp}</div>
+   <div class="roles">${f.roles.join(" · ")}${f.pure?` <span class="badge">· JEDNOTNÝ TÍM +8%</span>`:""}</div></div>`;
+ });
+ h+=`<div class="actions"><button class="btn" onclick="clearDraft()">Späť na draft</button>
+  <button class="btn" onclick="startManual()">Hrať manuálne</button>
+  <button class="btn main" onclick="startSim()">Simulovať súboj</button></div>
+  <div class="simRow"><span>Rýchla simulácia bez animácie:</span>
+  <button class="btn sm" onclick="runBatch(1)">1×</button>
+  <button class="btn sm" onclick="runBatch(50)">50×</button>
+  <button class="btn sm" onclick="runBatch(500)">500×</button></div></div>`;
+ return h;
+}
+function battleView(){
+ let h=`<div class="ring">`;
+ S.F.forEach(f=>{
+  const pct=(f.hp/f.maxHp)*100;
+  h+=`<div class="fCard ${S.active===f.team&&S.winner==null?"act":""} ${S.shake===f.team?"hit":""}" style="--c:${T[f.team].c}">
+   <div class="fTop"><span class="fTeam">${T[f.team].name}</span><span class="fCode">${f.code}</span></div>
+   <div class="mini">${f.parts.map(p=>`<span title="${p.n}">${face(p.id)}</span>`).join("")}</div>
+   <div class="names">${f.parts.map(p=>p.n).join(" · ")}</div>
+   <div class="hpWrap"><div class="hpBar" style="width:${pct}%"></div>${f.shield>0?`<div class="shBar" style="width:${Math.min(100,f.shield/f.maxHp*100)}%"></div>`:""}<span class="hpTxt">${f.hp}${f.shield>0?" +"+f.shield:""}</span></div>
+   <div class="m"><span>EN</span><i><s style="width:${f.en}%"></s></i></div>
+   <div class="m ult"><span>ULT</span><i><s style="width:${f.charge}%"></s></i></div>
+   <div class="fx">${f.dot.length?"🔥"+f.dot.reduce((s,d)=>s+d.d,0):""} ${f.stun?"💫":""} ${f.atkUp?"⬆"+f.atkUp:""} ${f.defDown?"🛡−"+f.defDown:""}</div></div>`;
+ });
+ h+=`</div><div class="log" id="log">`+S.log.map(l=>`<div style="color:${l.t===0?T[0].c:l.t===1?T[1].c:"#8b869c"}">${l.m}</div>`).join("")+`</div>`;
+ if(S.winner==null){
+  const f=S.F[S.active],lock=S.busy||S.ai[S.active];
+  h+=`<div class="turnBar" style="--c:${T[S.active].c}">NA ŤAHU: ${T[S.active].name} <span style="font-family:'Barlow Condensed';font-size:12px;color:var(--dim);letter-spacing:.1em">ŤAH ${S.turns+1}</span></div>
+   <div class="ctrl">
+    <label><input type="checkbox" ${S.ai[0]?"checked":""} onchange="setAI(0,this.checked)"> AI tím 1</label>
+    <label><input type="checkbox" ${S.ai[1]?"checked":""} onchange="setAI(1,this.checked)"> AI tím 2</label>
+    <select onchange="setSpeed(this.value)">
+     <option value="900" ${S.speed==900?"selected":""}>pomaly</option>
+     <option value="420" ${S.speed==420?"selected":""}>normál</option>
+     <option value="120" ${S.speed==120?"selected":""}>rýchlo</option>
+     <option value="35" ${S.speed==35?"selected":""}>turbo</option>
+    </select>
+    ${(S.ai[0]&&S.ai[1])?"":'<button class="btn sm" onclick="simulateRest()">Dosimulovať</button>'}
+   </div>
+   <div class="abGrid">
+   <button class="ab ultBtn" ${f.charge<100||lock?"disabled":""} onclick="act(-1)"><span><span class="abN">☄️ FÚZNY PRIELOM</span><span class="abM">${f.charge>=100?"pripravené":"nabité "+Math.round(f.charge)+"%"}</span></span></button>`;
+  f.parts.forEach((p,i)=>{
+   const off=f.cds[i]>0||f.en<p.ab.cost||lock;
+   h+=`<button class="ab" ${off?"disabled":""} onclick="act(${i})"><span class="pic">${face(p.id)}</span><span><span class="abN">${p.ab.name}</span><span class="abH">${p.n}</span><span class="abM">${f.cds[i]>0?"cooldown "+f.cds[i]:p.ab.cost+" en · sila "+p.ab.p}</span></span></button>`;
+  });
+  h+=`</div>`;
+ } else {
+  h+=`<div class="win" style="--c:${T[S.winner].c}"><div class="winCode">${S.F[S.winner].code}</div>
+   <div class="winTxt">${T[S.winner].name} vyhráva</div>
+   <div class="winTxt" style="margin-top:4px">${S.turns} ťahov</div>
+   <div class="actions"><button class="btn" onclick="rematch()">Odveta</button>
+   <button class="btn" onclick="runBatch(50)">Simulovať 50×</button>
+   <button class="btn" onclick="setView('hist')">História</button>
+   <button class="btn main" onclick="clearDraft()">Nový draft</button></div></div>`;
+ }
+ return h;
+}
+function simView(){
+ const m=S.sim,tot=Math.max(1,m.wins[0]+m.wins[1]+m.draws);
+ const p0=m.wins[0]/tot*100,p1=m.wins[1]/tot*100,pd=m.draws/tot*100;
+ const teamRow=(f)=>`<div class="s" style="color:${T[f.team].c}"><b style="font-family:Anton,Impact,sans-serif">${f.code}</b>${f.parts.map(x=>`<span>${face(x.id)}</span>`).join("")}</div>`;
+ return `<div class="simPanel">
+  <div class="simTitle">VÝSLEDOK ${m.n} SIMULÁCIÍ</div>
+  <div class="simTeams">${teamRow(S.F[0])}${teamRow(S.F[1])}</div>
+  <div class="simBar">
+   <div style="width:${p0}%;background:${T[0].c}">${p0>12?Math.round(p0)+"%":""}</div>
+   <div style="width:${pd}%;background:#4a4458"></div>
+   <div style="width:${p1}%;background:${T[1].c}">${p1>12?Math.round(p1)+"%":""}</div></div>
+  <div class="simSides"><span>${T[0].name} · ${m.wins[0]} výhier</span><span>${m.wins[1]} výhier · ${T[1].name}</span></div>
+  <div class="simGrid">
+   <div><b>${m.turns}</b><span>priemer ťahov</span></div>
+   <div><b>${m.draws}</b><span>remíz</span></div>
+   <div><b>${m.hp[0]}% / ${m.hp[1]}%</b><span>zvyšné hp víťaza</span></div></div>
+  <div class="actions">
+   <button class="btn" onclick="runBatch(50)">Ešte 50×</button>
+   <button class="btn" onclick="startSim()">Pozrieť jeden súboj</button>
+   <button class="btn" onclick="backToFusion()">Späť na fúziu</button>
+   <button class="btn main" onclick="clearDraft()">Nový draft</button></div></div>`;
+}
+function histView(){
+ if(!S.hist.length)return `<div class="empty">Zatiaľ žiadne zostavy. Zlož tímy a spusti fúziu — uložia sa sem aj s výsledkom.</div>`;
+ return S.hist.map(e=>{
+  const d=new Date(e.ts),ds=d.toLocaleDateString("sk-SK")+" "+d.toLocaleTimeString("sk-SK",{hour:"2-digit",minute:"2-digit"});
+  const side=(ids,code,t)=>`<div class="hSide ${e.w!=null&&e.w!==t?"lost":""}" style="--c:${T[t].c}">
+    <span class="lbl">${code}</span><span class="faces">${ids.map(i=>`<span title="${HEROES[i].n}">${face(i)}</span>`).join("")}</span>
+    ${e.w===t?'<span style="color:#ffc93c;font-size:12px;letter-spacing:.1em">VÍŤAZ</span>':""}</div>
+    <div class="names" style="text-align:left;margin:0 0 4px 80px">${ids.map(i=>HEROES[i].n).join(" · ")}</div>`;
+  return `<div class="hRow"><div class="hHead"><span>${ds}</span><span>${e.sim?`<span class="badge">sim ${e.sim}</span> · `:""}${e.w==null?"bez výsledku":T[e.w].name+" vyhral"}</span></div>
+   ${side(e.a,e.ca,0)}${side(e.b,e.cb,1)}
+   <div class="hAct"><button onclick="loadTeams(${e.id})">Načítať zostavy</button><button onclick="delHist(${e.id})">Zmazať</button></div></div>`;
+ }).join("");
+}
+render();loadHist();loadCustom();
+</script>
+</body>
+</html>
